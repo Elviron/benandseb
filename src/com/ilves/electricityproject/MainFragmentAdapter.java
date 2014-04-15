@@ -22,9 +22,9 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 		super(fragmentManager);
 		list = new ArrayList<Fragment>();
 		// Add pages
-		list.add(TestFragment.newInstance(0));
+		list.add(new TicketFragment());
 		list.add(TestFragment.newInstance(1));
-		list.add(TestFragment.newInstance(2));
+		list.add(new ProfileFragment());
 	}
 
 	/* (non-Javadoc)

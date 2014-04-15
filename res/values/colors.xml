@@ -3,7 +3,19 @@
     <color name="VR_blue">#FF009FE3</color>
     <color name="VR_blue_t">#00009FE3</color>
     <color name="VR_yellow">#FFFDC300</color>
-    <color name="VR_white">#FFFFFFFF</color>
-    <color name="VR_lightgray">#FFEEEEEE</color>
     <color name="VR_gray">#FF888888</color>
+    
+    <color name="EL_white">#FFFFFFFF</color>
+    <color name="EL_lightgray">#FFEEEEEE</color>
+    <color name="EL_darkgray">#FF888888</color>
+    
+    <color name="EL_blue">#FF0C9FDF</color>
+    <color name="EL_blue2">#FF259FE1</color>
+    <color name="EL_orange">#FFFF6126</color>
+    <color name="EL_orange2">#FFFF6600</color>
+    <color name="EL_orange3">#FFF2622E</color>
+    
+    <color name="VT_blue">#FF0099CC</color>
+    <color name="VT_blue_light">#FF1AA3D1</color>
+    <color name="VT_orange">#FFFF8442</color>
 </resources>
