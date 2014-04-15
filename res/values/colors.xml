@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="VR_blue">#FF009FE3</color>
+    <color name="VR_blue_t">#00009FE3</color>
+    <color name="VR_yellow">#FFFDC300</color>
+    <color name="VR_white">#FFFFFFFF</color>
+    <color name="VR_lightgray">#FFEEEEEE</color>
+    <color name="VR_gray">#FF888888</color>
+</resources>
