@@ -9,5 +9,7 @@
     <item android:drawable="@drawable/payment_right_shape_pressed" 
         android:state_pressed="false" 
         android:state_selected="true"/>
+    <item android:drawable="@drawable/payment_middle_shape" 
+        android:state_enabled="false"/>
 
 </selector>
