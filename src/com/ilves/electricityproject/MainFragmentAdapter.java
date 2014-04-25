@@ -6,6 +6,10 @@ package com.ilves.electricityproject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ilves.electricityproject.fragments.ProfileFragment;
+import com.ilves.electricityproject.fragments.TestFragment;
+import com.ilves.electricityproject.fragments.TicketFragment;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
