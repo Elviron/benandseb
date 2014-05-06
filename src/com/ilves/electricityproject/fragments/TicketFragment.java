@@ -1,5 +1,6 @@
 package com.ilves.electricityproject.fragments;
 
+import com.ilves.electricityproject.FragmentNotice;
 import com.ilves.electricityproject.R;
 import com.ilves.electricityproject.R.layout;
 
@@ -9,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TicketFragment extends Fragment {
+public class TicketFragment extends Fragment implements FragmentNotice {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,5 +24,17 @@ public class TicketFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.ticket, container, false);
 		return v;//super.onCreateView(inflater, container, savedInstanceState);
+	}
+
+	@Override
+	public void noticeActive() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void noticeInactive() {
+		// TODO Auto-generated method stub
+		
 	}
 }

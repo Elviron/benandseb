@@ -16,30 +16,38 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 /**
  * @author Seb
- *
+ * 
  */
 public class MainFragmentAdapter extends FragmentPagerAdapter {
 
-	List<Fragment> list;
+	List<FragmentNotice>	list;
+	TicketFragment	tf;
+	ProfileFragment	pf;
 
 	public MainFragmentAdapter(FragmentManager fragmentManager) {
 		super(fragmentManager);
-		list = new ArrayList<Fragment>();
+		list = new ArrayList<FragmentNotice>();
 		// Add pages
-		list.add(new TicketFragment());
+		tf = new TicketFragment();
+		list.add(tf);
 		list.add(TestFragment.newInstance(1));
-		list.add(new ProfileFragment());
+		pf = new ProfileFragment();
+		list.add(pf);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.FragmentPagerAdapter#getItem(int)
 	 */
 	@Override
 	public Fragment getItem(int position) {
-		return list.get(position);
+		return (Fragment) list.get(position);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.view.PagerAdapter#getCount()
 	 */
 	@Override
@@ -58,13 +66,14 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 			return "Buses";
 		case 2:
 			return "Profile";
-		case 3:
-			return "Map";
-		case 4:
-			return "Following";
 		default:
-			return "";
+			return "None";
 		}
+	}
+
+	public void setActive(int position) {
+		// TODO Auto-generated method stub
+		list.get(position).noticeActive();
 	}
 
 }

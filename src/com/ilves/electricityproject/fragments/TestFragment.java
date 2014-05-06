@@ -1,5 +1,6 @@
 package com.ilves.electricityproject.fragments;
 
+import com.ilves.electricityproject.FragmentNotice;
 import com.ilves.electricityproject.R;
 import com.ilves.electricityproject.R.id;
 import com.ilves.electricityproject.R.layout;
@@ -11,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class TestFragment extends Fragment {
+public class TestFragment extends Fragment implements FragmentNotice {
 	
 
 	int mNum;
@@ -44,5 +45,17 @@ public class TestFragment extends Fragment {
 		TextView tv = (TextView) v.findViewById(R.id.text);
 		tv.setText(""+(mNum+1)+" Content");
 		return v;
+	}
+
+	@Override
+	public void noticeActive() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void noticeInactive() {
+		// TODO Auto-generated method stub
+		
 	}
 }

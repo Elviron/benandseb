@@ -34,9 +34,9 @@
     </style>
 
     <style name="ActionBar.Solid.Electricity" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_background_textured_electricity</item>
+        <item name="android:background">@drawable/ab_solid_electricity</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_electricity</item>
-        <item name="android:backgroundSplit">@drawable/ab_background_textured_electricity</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_electricity</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Electricity</item>
     </style>
 

@@ -38,13 +38,19 @@ public class AchievementAdapter extends BaseAdapter {
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imageView.setPadding(8, 8, 8, 8);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(R.drawable.ic_achievement);
+        if (position == 0) {
+            imageView.setImageResource(R.drawable.ach_moneybag);
+		} else if (position == 1) {
+            imageView.setImageResource(R.drawable.ach_2);
+		} else {
+	        imageView.setImageResource(R.drawable.ach_locked);
+		}
         return imageView;
 	}
 

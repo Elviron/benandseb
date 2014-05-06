@@ -10,7 +10,7 @@
 
     <gradient
         android:angle="90"
-        android:endColor="#BBBBBB"
-        android:startColor="#AAAAAA" />
+        android:endColor="@color/EL_button_middle"
+        android:startColor="@color/EL_button_bottom" />
 
 </shape>

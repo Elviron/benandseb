@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">ElectriCity</string>
+    <string name="app_id">653566869354</string>
+    <string name="achievement_money_bag">CgkI6v773IITEAIQAA</string>
+    <string name="leaderboard_who_has_the_most_coins">CgkI6v773IITEAIQAg</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
@@ -9,6 +12,9 @@
         <item>Red</item>
         <item>Green</item>
         <item>Blue</item>
+    </string-array>
+    <string-array name="sign_out_array">
+        <item>Sign out</item>
     </string-array>
 
 </resources>
