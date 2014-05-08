@@ -11,9 +11,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.drive.Drive;
+import com.google.android.gms.games.Games;
 
-public class ElectriCityGoogleApiClient implements ConnectionCallbacks,
+public class ElectriCityGoogleApiClient implements
+		ConnectionCallbacks,
 		OnConnectionFailedListener {
 
 	private MainActivity		mContext;
@@ -28,24 +29,38 @@ public class ElectriCityGoogleApiClient implements ConnectionCallbacks,
 	public ElectriCityGoogleApiClient(MainActivity context) {
 		// TODO Auto-generated constructor stub
 		mContext = context;
-		mGoogleApiClient = new GoogleApiClient.Builder(context).addApi(Drive.API)
-																.addScope(Drive.SCOPE_FILE)
-																.addConnectionCallbacks(this)
-																.addOnConnectionFailedListener(this)
-																.build();
+		mGoogleApiClient = new GoogleApiClient.Builder(mContext).addApi(Games.API)
+				.addScope(Games.SCOPE_GAMES)
+				.addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this)
+				.build();
 	}
-
-	public void onStart() {
+	
+	public void connect() {
 		if (!mResolvingError) { // more about this later
 			mGoogleApiClient.connect();
 		}
 	}
 
+	public void onStart() {
+
+	}
+
 	public void onStop() {
 		mGoogleApiClient.disconnect();
 	}
-	
-	
+
+	public boolean isConnected() {
+		return mGoogleApiClient.isConnected();
+	}
+
+	public boolean isConnecting() {
+		return mGoogleApiClient.isConnecting();
+	}
+
+	public GoogleApiClient getClient() {
+		return mGoogleApiClient;
+	}
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
@@ -61,58 +76,60 @@ public class ElectriCityGoogleApiClient implements ConnectionCallbacks,
 	}
 
 	@Override
-    public void onConnectionFailed(ConnectionResult result) {
+	public void onConnectionFailed(ConnectionResult result) {
 		if (mResolvingError) {
-            // Already attempting to resolve an error.
-            return;
-        } else if (result.hasResolution()) {
-            try {
-                mResolvingError = true;
-                result.startResolutionForResult(mContext, REQUEST_RESOLVE_ERROR);
-            } catch (SendIntentException e) {
-                // There was an error with the resolution intent. Try again.
-                mGoogleApiClient.connect();
-            }
-        } else {
-            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
-            showErrorDialog(result.getErrorCode());
-            mResolvingError = true;
-        }
-    }
-	
+			// Already attempting to resolve an error.
+			return;
+		} else if (result.hasResolution()) {
+			try {
+				mResolvingError = true;
+				result.startResolutionForResult(mContext, REQUEST_RESOLVE_ERROR);
+			} catch (SendIntentException e) {
+				// There was an error with the resolution intent. Try again.
+				mGoogleApiClient.connect();
+			}
+		} else {
+			// Show dialog using GooglePlayServicesUtil.getErrorDialog()
+			showErrorDialog(result.getErrorCode());
+			mResolvingError = true;
+		}
+	}
+
 	// The rest of this code is all about building the error dialog
 
-    /* Creates a dialog for an error message */
-    private void showErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(mContext.getSupportFragmentManager(), "errordialog");
-    }
+	/* Creates a dialog for an error message */
+	private void showErrorDialog(int errorCode) {
+		// Create a fragment for the error dialog
+		ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+		// Pass the error that should be displayed
+		Bundle args = new Bundle();
+		args.putInt(DIALOG_ERROR, errorCode);
+		dialogFragment.setArguments(args);
+		dialogFragment.show(mContext.getSupportFragmentManager(), "errordialog");
+	}
 
-    /* Called from ErrorDialogFragment when the dialog is dismissed. */
-    public void onDialogDismissed() {
-        mResolvingError = false;
-    }
+	/* Called from ErrorDialogFragment when the dialog is dismissed. */
+	public void onDialogDismissed() {
+		mResolvingError = false;
+	}
 
-    /* A fragment to display an error dialog */
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
+	/* A fragment to display an error dialog */
+	public static class ErrorDialogFragment extends DialogFragment {
+		public ErrorDialogFragment() {
+		}
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GooglePlayServicesUtil.getErrorDialog(errorCode,
-                    this.getActivity(), REQUEST_RESOLVE_ERROR);
-        }
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Get the error code and retrieve the appropriate dialog
+			int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+			return GooglePlayServicesUtil.getErrorDialog(errorCode,
+					this.getActivity(),
+					REQUEST_RESOLVE_ERROR);
+		}
 
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            ((MainActivity)getActivity()).onDialogDismissed();
-        }
-    }
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			
+		}
+	}
 }

@@ -13,7 +13,8 @@ public class TestListDialog extends DialogFragment {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    builder.setTitle("Pick color:")
 	           .setItems(R.array.colors_array, new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int which) {
+	               @Override
+				public void onClick(DialogInterface dialog, int which) {
 	               // The 'which' argument contains the index position
 	               // of the selected item
 	           }

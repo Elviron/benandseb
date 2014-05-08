@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Localized strings -->
+    <string name="action_settings">Inställningar</string>
+    <string name="action_ach">Prestationer</string>
+    <string name="ticket">Biljett</string>
+    <string name="buses">Bussar</string>
+    <string name="profile">Profil</string>
+    
+    <string name="payment_methods">Betalningsmetoder:</string>
+    <string name="week_left">1 vecka kvar</string>
+    <string name="unlocked">Upplåsta</string>
+
+    <string-array name="colors_array">
+        <item>Röd</item>
+        <item>Grön</item>
+        <item>Blå</item>
+    </string-array>
+
+</resources>

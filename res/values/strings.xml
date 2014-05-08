@@ -2,19 +2,26 @@
 <resources>
 
     <string name="app_name">ElectriCity</string>
+    <string name="electricoins">ElectriCoins</string>
     <string name="app_id">653566869354</string>
+    <string name="achievement_thats_a_bingo">CgkI6v773IITEAIQAw</string>
     <string name="achievement_money_bag">CgkI6v773IITEAIQAA</string>
+    <string name="achievement_first_trip">CgkI6v773IITEAIQBA</string>
     <string name="leaderboard_who_has_the_most_coins">CgkI6v773IITEAIQAg</string>
+    <!-- Localized strings -->
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="action_ach">Achievements</string>
+    <string name="ticket">Ticket</string>
+    <string name="buses">Buses</string>
+    <string name="profile">Profile</string>
+    <string name="payment_methods">Payment methods:</string>
+    <string name="week_left">1 week left</string>
+    <string name="unlocked">Unlocked</string>
 
     <string-array name="colors_array">
         <item>Red</item>
         <item>Green</item>
         <item>Blue</item>
-    </string-array>
-    <string-array name="sign_out_array">
-        <item>Sign out</item>
     </string-array>
 
 </resources>

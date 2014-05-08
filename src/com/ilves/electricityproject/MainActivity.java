@@ -3,14 +3,15 @@ package com.ilves.electricityproject;
 import java.io.IOException;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -18,30 +19,30 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.images.ImageManager;
+import com.google.android.gms.common.images.ImageManager.OnImageLoadedListener;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.games.achievement.Achievements.LoadAchievementsResult;
+import com.ilves.electricityproject.GameHelper.GameHelperListener;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectConfig;
 import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 
 public class MainActivity extends FragmentActivity implements
-		ConnectionCallbacks,
-		OnConnectionFailedListener {
+		GameHelperListener, OnImageLoadedListener {
 
 	private static final String				TAG						= "MainActivity";
 
 	private ViewPager						mViewPager;
+	private MainFragmentAdapter				mAdapter;
 	/**
 	 * holds the Wikitude SDK AR-View, this is where camera, markers, compass,
 	 * 3D models etc. are rendered
@@ -70,14 +71,18 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Games client
 	 */
-	private GoogleApiClient					mGoogleApiClient;
-	private ElectriCityGoogleApiClient		mmGoogleApiClient;
+	private GameHelper						mHelper;
 	// Request code to use when launching the resolution activity
 	private static final int				REQUEST_RESOLVE_ERROR	= 1001;
 	// Unique tag for the error dialog fragment
 	private static final String				DIALOG_ERROR			= "dialog_error";
 	// Bool to track whether the app is already resolving an error
 	private boolean							mResolvingError			= false;
+
+	private View							connectedButton;
+
+	private View							disconnectedButton;
+
 	private static final String				STATE_RESOLVING_ERROR	= "resolving_error";
 	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
 
@@ -104,11 +109,8 @@ public class MainActivity extends FragmentActivity implements
 		// Location stuff
 		mLocationClient = new ElectriCityLocationClient(this);
 		// Google play services
-		mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Games.API)
-				.addScope(Games.SCOPE_GAMES)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.build();
+		mHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+		mHelper.setup(this);
 
 		// Get log in button
 
@@ -119,7 +121,8 @@ public class MainActivity extends FragmentActivity implements
 			// Shit happens
 
 			mViewPager = (ViewPager) findViewById(R.id.pager);
-			mViewPager.setAdapter(new MainFragmentAdapter(getSupportFragmentManager()));
+			mAdapter = new MainFragmentAdapter(getSupportFragmentManager(), this);
+			mViewPager.setAdapter(mAdapter);
 			mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 				@Override
 				public void onPageSelected(int position) {
@@ -129,7 +132,7 @@ public class MainActivity extends FragmentActivity implements
 					((MainFragmentAdapter) mViewPager.getAdapter()).setActive(position);
 					if (position == 2) {
 						if (!mResolvingError) { // more about this later
-							mGoogleApiClient.connect();
+							// mHelper.connect();
 						}
 					}
 				}
@@ -139,6 +142,7 @@ public class MainActivity extends FragmentActivity implements
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 			// Create a tab listener that is called when the user changes tabs.
 			ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+				@Override
 				public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
 					// show the given tab
 					// When the tab is selected, switch to the
@@ -146,28 +150,30 @@ public class MainActivity extends FragmentActivity implements
 					mViewPager.setCurrentItem(tab.getPosition());
 					if (tab.getPosition() == 2) {
 						if (!mResolvingError) { // more about this later
-							mGoogleApiClient.connect();
+							// mHelper.connect();
 						}
 					}
 				}
 
+				@Override
 				public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
 					// hide the given tab
 				}
 
+				@Override
 				public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
 					// probably ignore this event
 				}
 			};
 
 			actionBar.addTab(actionBar.newTab()
-					.setText("Ticket")
+					.setText(getString(R.string.ticket))
 					.setTabListener(tabListener));
 			actionBar.addTab(actionBar.newTab()
-					.setText("Buses")
+					.setText(getString(R.string.buses))
 					.setTabListener(tabListener));
 			actionBar.addTab(actionBar.newTab()
-					.setText("Profile")
+					.setText(getString(R.string.profile))
 					.setTabListener(tabListener));
 			// request updates of location
 			mLocationClient.setUpdates(false);
@@ -186,6 +192,11 @@ public class MainActivity extends FragmentActivity implements
 		default:
 			break;
 		}
+		/*
+		 * if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) ==
+		 * ConnectionResult.SUCCESS) { Toast.makeText(this, "Google play!",
+		 * Toast.LENGTH_SHORT).show(); }
+		 */
 	}
 
 	@Override
@@ -238,6 +249,10 @@ public class MainActivity extends FragmentActivity implements
 		super.onStart();
 		// Connect the client.
 		mLocationClient.onStart();
+		if (!mResolvingError) { // more about this later
+			mHelper.connect();
+		}
+		// mHelper.onStart(MainActivity.this);
 	}
 
 	@Override
@@ -245,7 +260,7 @@ public class MainActivity extends FragmentActivity implements
 		// Disconnecting the client invalidates it.
 		mLocationClient.onStop();
 		// Disconnect google api client
-		mGoogleApiClient.disconnect();
+		mHelper.onStop();
 		super.onStop();
 	}
 
@@ -264,6 +279,11 @@ public class MainActivity extends FragmentActivity implements
 		outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
 	}
 
+	/**
+	 * ========================================================================
+	 * ================= MENU STUFF
+	 * ========================================================================
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -271,23 +291,43 @@ public class MainActivity extends FragmentActivity implements
 		return true;
 	}
 
-	/**
-	 * ========================================================================
-	 * ================= ACTIVITY RESULTS
-	 * ========================================================================
-	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		if (mHelper.isSignedIn()) {
+			menu.findItem(R.id.action_connected).setVisible(true);
+			menu.findItem(R.id.action_disconnected).setVisible(false);
+		} else {
+			menu.findItem(R.id.action_connected).setVisible(false);
+			menu.findItem(R.id.action_disconnected).setVisible(true);
+		}
+		return super.onPrepareOptionsMenu(menu);
+	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_RESOLVE_ERROR) {
-			mResolvingError = false;
-			if (resultCode == RESULT_OK) {
-				// Make sure the app is not already connected or attempting to
-				// connect
-				if (!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()) {
-					mGoogleApiClient.connect();
-				}
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_connected:
+			// Show dialog to prompt user if want to log in
+			SignOutDialog d = new SignOutDialog();
+			d.show(getSupportFragmentManager(), "TestDialogFragment");
+			return true;
+		case R.id.action_disconnected:
+			// Connect to Google games
+
+			mHelper.connect();
+			mHelper.onStart(MainActivity.this);
+			return true;
+		case R.id.action_ach:
+			// Show achievements
+			if (mHelper.isSignedIn()) {
+				startActivityForResult(Games.Achievements.getAchievementsIntent(mHelper.getApiClient()),
+						REQUEST_ACHIEVEMENTS);
 			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -309,55 +349,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onCoin(View v) {
 		TestDialog d = new TestDialog();
 		d.show(getSupportFragmentManager(), "TestDialogFragment");
-	}
-
-	public void onSignIn() {
-		// start the asynchronous sign in flow
-		// beginUserInitiatedSignIn();
-		Log.i("CLICK", "CLICK");
-		if (mGoogleApiClient.isConnected()) {
-			startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
-					REQUEST_ACHIEVEMENTS);
-		}
-	}
-
-	/**
-	 * ========================================================================
-	 * ================= CONNECTION
-	 * ========================================================================
-	 */
-
-	@Override
-	public void onConnected(Bundle connectionHint) {
-	}
-
-	@Override
-	public void onConnectionSuspended(int cause) {
-		// TODO Auto-generated method stub
-		Log.i("Connection", "onConnectionSuspended");
-
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult result) {
-		Log.i("Connection", "onConnectionFailed");
-		// TODO Auto-generated method stub
-		if (mResolvingError) {
-			// Already attempting to resolve an error.
-			return;
-		} else if (result.hasResolution()) {
-			try {
-				mResolvingError = true;
-				result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
-			} catch (SendIntentException e) {
-				// There was an error with the resolution intent. Try again.
-				mGoogleApiClient.connect();
-			}
-		} else {
-			// Show dialog using GooglePlayServicesUtil.getErrorDialog()
-			showErrorDialog(result.getErrorCode());
-			mResolvingError = true;
-		}
 	}
 
 	/**
@@ -388,41 +379,90 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	// The rest of this code is all about building the error dialog
-	/* Creates a dialog for an error message */
-	private void showErrorDialog(int errorCode) {
-		// Create a fragment for the error dialog
-		ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-		// Pass the error that should be displayed
-		Bundle args = new Bundle();
-		args.putInt(DIALOG_ERROR, errorCode);
-		dialogFragment.setArguments(args);
-		dialogFragment.show(getSupportFragmentManager(), "errordialog");
+	/**
+	 * GAME HELPER CALLBACKS
+	 */
+
+	@Override
+	public void onSignInFailed() {
+		Log.i(TAG, "onSignInFailed");
+		// TODO Auto-generated method stub
+		// Switch icons in menu
+		invalidateOptionsMenu();
+		mAdapter.setName("Please sign in");
 	}
 
-	/* Called from ErrorDialogFragment when the dialog is dismissed. */
-	public void onDialogDismissed() {
-		mResolvingError = false;
-	}
+	@Override
+	public void onSignInSucceeded() {
+		Log.i(TAG, "onSignInSucceeded");
+		// Switch icons in menu
+		invalidateOptionsMenu();
+		// Notify profile fragment that we are signed in, show log out button
+		// mAdapter.getPf().signInSuccessful();
+		Toast.makeText(this,
+				Games.Players.getCurrentPlayer(mHelper.getApiClient()).getDisplayName(),
+				Toast.LENGTH_SHORT).show();
+		Player p = Games.Players.getCurrentPlayer(mHelper.getApiClient());
+		ImageManager iManager = ImageManager.create(this);
+		iManager.loadImage(this, p.getIconImageUri());
+		// Set this as callback for the achievements
 
-	/* A fragment to display an error dialog */
-	public static class ErrorDialogFragment extends DialogFragment {
-		public ErrorDialogFragment() {
+		switch (getResources().getConfiguration().orientation) {
+		case Configuration.ORIENTATION_PORTRAIT:
+			Games.Achievements.load(mHelper.getApiClient(), false).setResultCallback(mAdapter.getPf());
+			mAdapter.setName(p.getDisplayName());
+			break;
+		case Configuration.ORIENTATION_LANDSCAPE:
+			break;
+		default:
+			break;
 		}
+	}
+
+	public void signOut() {
+		// TODO Auto-generated method stub
+		mHelper.disconnect();
+	}
+
+	public void signIn() {
+		// TODO Auto-generated method stub
+		mHelper.connect();
+	}
+
+	public class SignOutDialog extends DialogFragment {
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			// Get the error code and retrieve the appropriate dialog
-			int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-			return GooglePlayServicesUtil.getErrorDialog(errorCode,
-					this.getActivity(),
-					REQUEST_RESOLVE_ERROR);
+			// Use the Builder class for convenient dialog construction
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage("Do you really want to sign out?")
+					.setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							// Call sign out
+							Log.i(TAG, "PositiveButton");
+							mHelper.signOut();
+							mAdapter.setName("Please sign in");
+							mAdapter.setIcon(null);
+							invalidateOptionsMenu();
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							// User cancelled the dialog
+						}
+					});
+			// Create the AlertDialog object and return it
+			return builder.create();
 		}
 
-		@Override
-		public void onDismiss(DialogInterface dialog) {
-			((MainActivity) getActivity()).onDialogDismissed();
-		}
 	}
 
+	@Override
+	public void onImageLoaded(Uri uri, Drawable drawable, boolean isRequestedDrawable) {
+		// Send profile image to profile fragment
+		Log.i(TAG, "onImageLoaded");
+		mAdapter.setIcon(drawable);
+	}
 }

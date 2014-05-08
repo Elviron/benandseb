@@ -1,6 +1,11 @@
 package com.ilves.electricityproject;
 
+import java.util.ArrayList;
+
+import com.google.android.gms.games.achievement.Achievement;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,15 +14,25 @@ import android.widget.ImageView;
 
 public class AchievementAdapter extends BaseAdapter {
 	private Context mContext;
-	
-	public AchievementAdapter(Context c) {
-        mContext = c;
+	private int mCount = 18;
+	private ArrayList<ElectriCityAchievement> mList;
+	private int mCountUnlocked = 0;
+
+	public AchievementAdapter(Context context, ArrayList<ElectriCityAchievement> mGridList) {
+        mContext = context;
+        mList = mGridList;
     }
+	
+	public void setList(ArrayList<ElectriCityAchievement> list) {
+		Log.i("ProfileFragment", "setList");
+		mList = list;
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return 39;
+		return mList.size();
 	}
 
 	@Override
@@ -38,20 +53,29 @@ public class AchievementAdapter extends BaseAdapter {
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setPadding(8, 8, 8, 8);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        if (position == 0) {
+    	imageView.setImageDrawable(mList.get(position).getDrawable());
+    	/*
+        if (position > 2) {
+	        imageView.setImageResource(R.drawable.ach_locked);
+		} else if (position == 2) {
             imageView.setImageResource(R.drawable.ach_moneybag);
 		} else if (position == 1) {
             imageView.setImageResource(R.drawable.ach_2);
-		} else {
-	        imageView.setImageResource(R.drawable.ach_locked);
+		} else { // (position == 0)
+            imageView.setImageResource(R.drawable.ach_bingo);
 		}
+		*/
         return imageView;
+	}
+	
+	public String getUnlocked() {
+		return mCountUnlocked+"/"+getCount();
 	}
 
 }

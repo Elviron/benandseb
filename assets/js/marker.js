@@ -4,12 +4,14 @@ function Marker(poiData) {
 
     var markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude, poiData.altitude);
     this.markerDrawable_idle = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
+        horizontalAnchor: AR.CONST.HORIZONTAL_ANCHOR.BOTTOM,
         zOrder: 0,
         opacity: 1.0,
         onClick: Marker.prototype.getOnClickTrigger(this)
     });
 
     this.markerDrawable_selected = new AR.ImageDrawable(World.markerDrawable_selected, 2.5, {
+        horizontalAnchor: AR.CONST.HORIZONTAL_ANCHOR.BOTTOM,
         zOrder: 0,
         opacity: 0.0,
         onClick: null

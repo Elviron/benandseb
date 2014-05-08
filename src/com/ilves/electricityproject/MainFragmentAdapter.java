@@ -10,6 +10,7 @@ import com.ilves.electricityproject.fragments.ProfileFragment;
 import com.ilves.electricityproject.fragments.TestFragment;
 import com.ilves.electricityproject.fragments.TicketFragment;
 
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -20,18 +21,22 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class MainFragmentAdapter extends FragmentPagerAdapter {
 
-	List<FragmentNotice>	list;
-	TicketFragment	tf;
-	ProfileFragment	pf;
+	private MainActivity			mContext;
+	private List<FragmentNotice>	list;
+	private TicketFragment			tf;
 
-	public MainFragmentAdapter(FragmentManager fragmentManager) {
+	private ProfileFragment			pf;
+
+	public MainFragmentAdapter(FragmentManager fragmentManager, MainActivity mainActivity) {
 		super(fragmentManager);
+		mContext = mainActivity;
 		list = new ArrayList<FragmentNotice>();
 		// Add pages
 		tf = new TicketFragment();
 		list.add(tf);
 		list.add(TestFragment.newInstance(1));
 		pf = new ProfileFragment();
+		pf.addContext(mContext);
 		list.add(pf);
 	}
 
@@ -61,11 +66,11 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 		// TODO Auto-generated method stub
 		switch (position) {
 		case 0:
-			return "Ticket";
+			return mContext.getString(R.string.ticket);
 		case 1:
-			return "Buses";
+			return mContext.getString(R.string.buses);
 		case 2:
-			return "Profile";
+			return mContext.getString(R.string.profile);
 		default:
 			return "None";
 		}
@@ -74,6 +79,23 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 	public void setActive(int position) {
 		// TODO Auto-generated method stub
 		list.get(position).noticeActive();
+	}
+
+	public TicketFragment getTf() {
+		return tf;
+	}
+
+	public ProfileFragment getPf() {
+		return pf;
+	}
+	
+	public void setName(String name) {
+		pf.setName(name);
+	}
+
+	public void setIcon(Drawable drawable) {
+		// TODO Auto-generated method stub
+		pf.setIcon(drawable);
 	}
 
 }

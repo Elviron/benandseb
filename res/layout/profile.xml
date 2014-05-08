@@ -16,47 +16,36 @@
         android:paddingTop="@dimen/activity_vertical_margin" >
 
         <ImageView
-            android:id="@+id/ticket_profile_rank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/profile_rank"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_alignParentLeft="true"
             android:contentDescription="Rank"
-            android:src="@drawable/ic_profile_rank" />
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_rank_1" />
 
         <ImageView
-            android:id="@+id/ticket_profile_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/profile_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:contentDescription="Rank"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_user" />
 
-        <!-- sign-in button -->
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
+        <TextView
+            android:id="@+id/profile_player_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@id/ticket_profile_image"
-            android:layout_toRightOf="@id/ticket_profile_rank" />
-
-        <!-- sign-out button -->
-
-        <Spinner
-            android:id="@+id/sign_out_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@id/ticket_profile_image"
-            android:layout_toRightOf="@id/ticket_profile_rank" />
+            android:layout_toLeftOf="@id/profile_image"
+            android:layout_toRightOf="@id/profile_rank"
+            android:gravity="center"
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -69,17 +58,31 @@
         android:paddingTop="@dimen/activity_vertical_margin" >
 
         <TextView
+            android:id="@+id/profile_ach_unlocked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:text="2/40" />
+
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="2/40 Unlocked" />
+            android:text="@string/unlocked" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="2 ElectriCoins" />
+            android:paddingRight="5dp"
+            android:text="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/electricoins" />
     </LinearLayout>
 
     <TextView

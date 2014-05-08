@@ -1,10 +1,8 @@
 package com.ilves.electricityproject.fragments;
 
 import com.ilves.electricityproject.FragmentNotice;
+import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
-import com.ilves.electricityproject.R.id;
-import com.ilves.electricityproject.R.layout;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +14,7 @@ public class TestFragment extends Fragment implements FragmentNotice {
 	
 
 	int mNum;
+	private MainActivity	mContext;
 	
 	/**
      * Create a new instance of TestFragment, providing "num"
@@ -57,5 +56,11 @@ public class TestFragment extends Fragment implements FragmentNotice {
 	public void noticeInactive() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void addContext(MainActivity context) {
+		// TODO Auto-generated method stub
+		mContext = context;
 	}
 }
