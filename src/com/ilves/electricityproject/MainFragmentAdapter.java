@@ -6,14 +6,17 @@ package com.ilves.electricityproject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ilves.electricityproject.fragments.ProfileFragment;
-import com.ilves.electricityproject.fragments.TestFragment;
-import com.ilves.electricityproject.fragments.TicketFragment;
-
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.google.android.gms.games.Games;
+import com.ilves.electricityproject.fragments.BusesFragment;
+import com.ilves.electricityproject.fragments.ProfileFragment;
+import com.ilves.electricityproject.fragments.TestFragment;
+import com.ilves.electricityproject.fragments.TicketFragment;
 
 /**
  * @author Seb
@@ -26,6 +29,7 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 	private TicketFragment			tf;
 
 	private ProfileFragment			pf;
+	private BusesFragment	bf;
 
 	public MainFragmentAdapter(FragmentManager fragmentManager, MainActivity mainActivity) {
 		super(fragmentManager);
@@ -34,7 +38,8 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 		// Add pages
 		tf = new TicketFragment();
 		list.add(tf);
-		list.add(TestFragment.newInstance(1));
+		bf = new BusesFragment();
+		list.add(bf);
 		pf = new ProfileFragment();
 		pf.addContext(mContext);
 		list.add(pf);

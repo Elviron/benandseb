@@ -37,10 +37,10 @@ public class GameHelper implements
 		 * Called when sign-in fails. As a result, a "Sign-In" button can be
 		 * shown to the user; when that button is clicked, call
 		 * 
-		 * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls
-		 *                                            to this method mean an
-		 *                                            error; it may be a result
-		 *                                            of the fact that automatic
+		 * @link{GamesHelper#beginUserInitiatedSignIn Note that not all calls to
+		 *                                            this method mean an error;
+		 *                                            it may be a result of the
+		 *                                            fact that automatic
 		 *                                            sign-in could not proceed
 		 *                                            because user interaction
 		 *                                            was required (consent

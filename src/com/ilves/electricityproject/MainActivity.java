@@ -7,13 +7,16 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -24,12 +27,11 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.common.images.ImageManager.OnImageLoadedListener;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.games.achievement.Achievements.LoadAchievementsResult;
+import com.google.android.gms.games.request.GameRequest;
 import com.ilves.electricityproject.GameHelper.GameHelperListener;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectConfig;
@@ -37,10 +39,12 @@ import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 
 public class MainActivity extends FragmentActivity implements
-		GameHelperListener, OnImageLoadedListener {
+		GameHelperListener,
+		OnImageLoadedListener {
 
 	private static final String				TAG						= "MainActivity";
 
+	private boolean							isPortrait;
 	private ViewPager						mViewPager;
 	private MainFragmentAdapter				mAdapter;
 	/**
@@ -71,7 +75,7 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Games client
 	 */
-	private GameHelper						mHelper;
+	GameHelper								mHelper;
 	// Request code to use when launching the resolution activity
 	private static final int				REQUEST_RESOLVE_ERROR	= 1001;
 	// Unique tag for the error dialog fragment
@@ -85,6 +89,13 @@ public class MainActivity extends FragmentActivity implements
 
 	private static final String				STATE_RESOLVING_ERROR	= "resolving_error";
 	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
+	private static final int				REQUEST_LEADERBOARD		= 40002;
+
+	private String							LEADERBOARD_ID;
+
+	private int								SEND_GIFT_CODE			= 41001;
+	
+	private String android_id; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +128,7 @@ public class MainActivity extends FragmentActivity implements
 		// get viewpager
 		switch (getResources().getConfiguration().orientation) {
 		case Configuration.ORIENTATION_PORTRAIT:
+			isPortrait = true;
 			Log.i("AR", "ORIENTATION_PORTRAIT");
 			// Shit happens
 
@@ -179,6 +191,7 @@ public class MainActivity extends FragmentActivity implements
 			mLocationClient.setUpdates(false);
 			break;
 		case Configuration.ORIENTATION_LANDSCAPE:
+			isPortrait = false;
 			Log.i("AR", "ORIENTATION_LANDSCAPE");
 			this.mArchitectView = (ArchitectView) this.findViewById(R.id.architectView);
 			final ArchitectConfig config = new ArchitectConfig("" /* license key */);
@@ -197,27 +210,26 @@ public class MainActivity extends FragmentActivity implements
 		 * ConnectionResult.SUCCESS) { Toast.makeText(this, "Google play!",
 		 * Toast.LENGTH_SHORT).show(); }
 		 */
+		android_id = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+		debugLog("id: "+android_id);
 	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// TODO Auto-generated method stub
-		switch (getResources().getConfiguration().orientation) {
-		case Configuration.ORIENTATION_PORTRAIT:
-			break;
-		case Configuration.ORIENTATION_LANDSCAPE:
+		if (isPortrait) {
+
+		} else {
 			this.mArchitectView.onPostCreate();
 			try {
-				this.mArchitectView.load("index.html");
+				// http://electricity-project.herokuapp.com/
+				// https://googledrive.com/host/0B3u2WUMfD8yLVldaaDBTRGRuVkE/index.html
+				this.mArchitectView.load("https://googledrive.com/host/0B3u2WUMfD8yLVldaaDBTRGRuVkE/index.html");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			break;
-
-		default:
-			break;
 		}
 	}
 
@@ -319,12 +331,10 @@ public class MainActivity extends FragmentActivity implements
 			mHelper.connect();
 			mHelper.onStart(MainActivity.this);
 			return true;
-		case R.id.action_ach:
-			// Show achievements
-			if (mHelper.isSignedIn()) {
-				startActivityForResult(Games.Achievements.getAchievementsIntent(mHelper.getApiClient()),
-						REQUEST_ACHIEVEMENTS);
-			}
+		case R.id.action_login:
+			// Start login activity
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivity(intent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -349,6 +359,31 @@ public class MainActivity extends FragmentActivity implements
 	public void onCoin(View v) {
 		TestDialog d = new TestDialog();
 		d.show(getSupportFragmentManager(), "TestDialogFragment");
+	}
+
+	public void onAch(View v) {
+		if (mHelper.isSignedIn()) {
+			startActivityForResult(Games.Achievements.getAchievementsIntent(mHelper.getApiClient()),
+					REQUEST_ACHIEVEMENTS);
+		}
+	}
+
+	public void onLead(View v) {
+		if (mHelper.isSignedIn()) {
+			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mHelper.getApiClient(),
+					getString(R.string.leaderboard_who_has_the_most_coins)),
+					REQUEST_LEADERBOARD);
+		}
+	}
+
+	public void onGift(View v) {
+		Intent intent = Games.Requests.getSendIntent(mHelper.getApiClient(),
+				GameRequest.TYPE_GIFT,
+				"".getBytes(),
+				2,
+				BitmapFactory.decodeResource(getResources(), R.drawable.ic_games_gifts),
+				"Send stuff");
+		startActivityForResult(intent, SEND_GIFT_CODE);
 	}
 
 	/**
@@ -402,21 +437,22 @@ public class MainActivity extends FragmentActivity implements
 		Toast.makeText(this,
 				Games.Players.getCurrentPlayer(mHelper.getApiClient()).getDisplayName(),
 				Toast.LENGTH_SHORT).show();
-		Player p = Games.Players.getCurrentPlayer(mHelper.getApiClient());
+		Player p = getPlayer();
 		ImageManager iManager = ImageManager.create(this);
 		iManager.loadImage(this, p.getIconImageUri());
-		// Set this as callback for the achievements
+		// Log all info from player
+		debugLog("Name:            " + p.getDisplayName());
+		debugLog("ID:              " + p.getPlayerId());
+		debugLog("HiResImageUrl:   " + p.getHiResImageUrl());
+		debugLog("IconImageUrl:    " + p.getIconImageUrl());
+		debugLog("LastPlWith:      " + p.getLastPlayedWithTimestamp());
+		debugLog("RetrievedTimestamp:      " + p.getRetrievedTimestamp());
 
-		switch (getResources().getConfiguration().orientation) {
-		case Configuration.ORIENTATION_PORTRAIT:
-			Games.Achievements.load(mHelper.getApiClient(), false).setResultCallback(mAdapter.getPf());
+		if (isPortrait) {
+			// Set this as callback for the achievements
 			mAdapter.setName(p.getDisplayName());
-			break;
-		case Configuration.ORIENTATION_LANDSCAPE:
-			break;
-		default:
-			break;
 		}
+		//AppStateManager.load(mHelper.getApiClient(), 1);
 	}
 
 	public void signOut() {
@@ -462,7 +498,22 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onImageLoaded(Uri uri, Drawable drawable, boolean isRequestedDrawable) {
 		// Send profile image to profile fragment
-		Log.i(TAG, "onImageLoaded");
-		mAdapter.setIcon(drawable);
+		debugLog("onImageLoaded");
+		if (isPortrait) {
+			mAdapter.setIcon(drawable);
+		}
+	}
+
+	/**
+	 * 
+	 * @param message
+	 */
+
+	private void debugLog(String message) {
+		Log.i(TAG, message);
+	}
+
+	public Player getPlayer() {
+		return Games.Players.getCurrentPlayer(mHelper.getApiClient());
 	}
 }

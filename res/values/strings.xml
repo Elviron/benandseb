@@ -11,17 +11,50 @@
     <!-- Localized strings -->
     <string name="action_settings">Settings</string>
     <string name="action_ach">Achievements</string>
+    <string name="action_login">Log in</string>
     <string name="ticket">Ticket</string>
     <string name="buses">Buses</string>
     <string name="profile">Profile</string>
+    <string name="profile_track">Track</string>
     <string name="payment_methods">Payment methods:</string>
     <string name="week_left">1 week left</string>
     <string name="unlocked">Unlocked</string>
+    <!-- Button strings -->
+    <string name="btn_sms">SMS</string>
+    <string name="btn_sms_descr">SMS</string>
+    <string name="btn_creditcard">Credit card</string>
+    <string name="btn_creditcard_descr">Credit card</string>
+    <string name="btn_electricoin">ElectriCoin</string>
+    <string name="btn_electricoin_descr">ElectriCoin</string>
+    <string name="btn_achievements">Achievements</string>
+    <string name="btn_achievements_descr">Achievements</string>
+    <string name="btn_leaderboard">Leaderboards</string>
+    <string name="btn_leaderboard_descr">Leaderboards</string>
+    <string name="btn_gifts">Gifts</string>
+    <string name="btn_gifts_descr">Gifts</string>
+    <string name="profile_moneybag_descr">SMS</string>
+    <string name="profile_rank_descr">SMS</string>
+    <string name="profile_image_descr">SMS</string>
+    <!-- Login strings -->
+    <string name="login_text">Log in</string>
 
     <string-array name="colors_array">
         <item>Red</item>
         <item>Green</item>
         <item>Blue</item>
     </string-array>
+    <string-array name="titles_array">
+        <item>the Environmentalist</item>
+        <item>the Achieveaholic</item>
+        <item>the Zombie</item>
+        <item>the Big-hearted</item>
+        <item>the Master of Coin</item>
+    </string-array>
+    
+    <!-- Placeholder Strings -->
+    <string name="placeholder_number">15</string>
+    <string name="placeholder_number_per_number">3/12</string>
+    <string name="placeholder_month">May</string>
+    <string name="placeholder_day">24</string>
 
 </resources>

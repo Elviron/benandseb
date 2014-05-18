@@ -2,7 +2,6 @@
 <resources>
 
     <color name="EL_white">#FFFFFFFF</color>
-    <color name="EL_button_divider">#FF888888</color>
     <color name="EL_blue">#FF0C9FDF</color>
     <color name="EL_blue2">#FF259FE1</color>
     <color name="EL_orange">#FFf7941d</color>
@@ -10,8 +9,15 @@
     <color name="VT_blue">#FF0099CC</color>
     <color name="VT_blue_light">#FF1AA3D1</color>
     <color name="VT_orange">#FFFF8442</color>
-    <color name="EL_button_bottom">#FF9F9F9F</color>
-    <color name="EL_button_middle">#FFB6B6B6</color>
-    <color name="EL_button_top">#FFCDCDCD</color>
+    <color name="EL_button_top">#FF3CB8EB</color>
+    <color name="EL_button_middle">#FF36A5D3</color>
+    <color name="EL_button_bottom">#FF3192BB</color>
+    <color name="EL_button_divider">#FF236885</color>
+    <color name="EL_icon_orange">#FFf7941d</color>
+    <color name="EL_icon_bolt">#FFB7E6FA</color>
+    <color name="EL_icon_lightblue">#FF3cb8eb</color>
+    <color name="EL_icon_darkblue">#FF3192bb</color>
+    <color name="EL_icon_white">#FFe8faff </color>
+    <color name="EL_icon_green">#FF43c771</color>
 
 </resources>

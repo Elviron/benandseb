@@ -11,6 +11,13 @@
     <string name="payment_methods">Betalningsmetoder:</string>
     <string name="week_left">1 vecka kvar</string>
     <string name="unlocked">Upplåsta</string>
+    <!-- Button strings -->
+    <string name="btn_sms">SMS</string>
+    <string name="btn_creditcard">Kreditkort</string>
+    <string name="btn_electricoin">ElectriCoin</string>
+    <string name="btn_achievements">Prestationer</string>
+    <string name="btn_leaderboard">Topplistor</string>
+    <string name="btn_gifts">Gåvor</string>
 
     <string-array name="colors_array">
         <item>Röd</item>

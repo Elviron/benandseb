@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,11 +22,15 @@ public class ElectriCityLocationClient implements
 
 	private MainActivity		mContext;
 	private LocationClient		mLocationClient;
-	boolean						mUpdatesRequested;
+	private LocationManager		mLocationManager;
+	LocationResult				locationResult;
+	boolean						gps_enabled					= false;
+	boolean						network_enabled				= false;
+	private boolean				mUpdatesRequested;
 	// Milliseconds per second
 	private static final int	MILLISECONDS_PER_SECOND		= 1000;
 	// Update frequency in seconds
-	public static final int		UPDATE_INTERVAL_IN_SECONDS	= 5;
+	public static final int		UPDATE_INTERVAL_IN_SECONDS	= 15;
 	// Update frequency in milliseconds
 	private static final long	UPDATE_INTERVAL				= MILLISECONDS_PER_SECOND
 																	* UPDATE_INTERVAL_IN_SECONDS;
@@ -51,8 +57,8 @@ public class ElectriCityLocationClient implements
 		 * callbacks.
 		 */
 		mLocationClient = new LocationClient(context, this, this);
-        // Start with updates turned off
-        mUpdatesRequested = false;
+		// Start with updates turned off
+		mUpdatesRequested = false;
 		// Create the LocationRequest object
 		mLocationRequest = LocationRequest.create();
 		// Use high accuracy
@@ -61,6 +67,18 @@ public class ElectriCityLocationClient implements
 		mLocationRequest.setInterval(UPDATE_INTERVAL);
 		// Set the fastest update interval to 1 second
 		mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+	}
+
+	protected void makeUseOfNewLocation(Location location) {
+		// TODO Auto-generated method stub
+		if (location != null) {
+			// Report to the UI that the location was updated
+			String msg = "LocationManager Location: " + Double.toString(location.getLatitude())
+					+ "," + Double.toString(location.getLongitude());
+			Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+			mContext.updateLocationInWikitude(location);
+		}
+		
 	}
 
 	public void onPause() {
@@ -74,19 +92,17 @@ public class ElectriCityLocationClient implements
 	}
 
 	public void onStop() {
-        // If the client is connected
-        if (mLocationClient.isConnected()) {
-            /*
-             * Remove location updates for a listener.
-             * The current Activity is the listener, so
-             * the argument is "this".
-             */
-        	mLocationClient.removeLocationUpdates(this);
-        }
-        /*
-         * After disconnect() is called, the client is
-         * considered "dead".
-         */
+		// If the client is connected
+		if (mLocationClient.isConnected()) {
+			/*
+			 * Remove location updates for a listener. The current Activity is
+			 * the listener, so the argument is "this".
+			 */
+			mLocationClient.removeLocationUpdates(this);
+		}
+		/*
+		 * After disconnect() is called, the client is considered "dead".
+		 */
 		mLocationClient.disconnect();
 	}
 
@@ -111,12 +127,11 @@ public class ElectriCityLocationClient implements
 
 	}
 
-
-    /*
-     * Called by Location Services when the request to connect the
-     * client finishes successfully. At this point, you can
-     * request the current location or start periodic updates
-     */
+	/*
+	 * Called by Location Services when the request to connect the client
+	 * finishes successfully. At this point, you can request the current
+	 * location or start periodic updates
+	 */
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		// TODO Auto-generated method stub
@@ -146,6 +161,7 @@ public class ElectriCityLocationClient implements
 		// TODO Auto-generated method stub
 
 	}
+
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
@@ -158,8 +174,12 @@ public class ElectriCityLocationClient implements
 		}
 
 	}
-	
+
 	public void setUpdates(boolean updatesRequested) {
 		mUpdatesRequested = updatesRequested;
+	}
+
+	public static abstract class LocationResult {
+		public abstract void gotLocation(Location location);
 	}
 }
