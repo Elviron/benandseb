@@ -6,13 +6,16 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +36,11 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.request.GameRequest;
 import com.ilves.electricityproject.GameHelper.GameHelperListener;
+import com.ilves.electricityproject.dialogs.CoinDialog;
+import com.ilves.electricityproject.dialogs.PeriodDialog;
+import com.ilves.electricityproject.dialogs.SettingsDialog;
+import com.ilves.electricityproject.dialogs.TicketDialog;
+import com.ilves.electricityproject.dialogs.TestDialog;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectConfig;
 import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
@@ -40,11 +48,13 @@ import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 
 public class MainActivity extends FragmentActivity implements
 		GameHelperListener,
-		OnImageLoadedListener {
+		OnImageLoadedListener,
+		ArchitectUrlListener {
 
 	private static final String				TAG						= "MainActivity";
 
 	private boolean							isPortrait;
+	private boolean							isLoggedIn				= false;
 	private ViewPager						mViewPager;
 	private MainFragmentAdapter				mAdapter;
 	/**
@@ -91,11 +101,15 @@ public class MainActivity extends FragmentActivity implements
 	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
 	private static final int				REQUEST_LEADERBOARD		= 40002;
 
+	private static final int				REQUEST_LOGIN			= 50001;
+
 	private String							LEADERBOARD_ID;
 
 	private int								SEND_GIFT_CODE			= 41001;
-	
-	private String android_id; 
+
+	private SharedPreferences				mPrefs;
+
+	private MediaPlayer						mediaPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -196,6 +210,8 @@ public class MainActivity extends FragmentActivity implements
 			this.mArchitectView = (ArchitectView) this.findViewById(R.id.architectView);
 			final ArchitectConfig config = new ArchitectConfig("" /* license key */);
 			this.mArchitectView.onCreate(config);
+			// Url listener for architectview
+			this.mArchitectView.registerUrlListener(this);
 			// listener passed over to locationProvider, any location update is
 			// handled here
 			// request updates of location
@@ -210,8 +226,8 @@ public class MainActivity extends FragmentActivity implements
 		 * ConnectionResult.SUCCESS) { Toast.makeText(this, "Google play!",
 		 * Toast.LENGTH_SHORT).show(); }
 		 */
-		android_id = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-		debugLog("id: "+android_id);
+		// Sound
+		mediaPlayer = MediaPlayer.create(this, R.raw.coin_sound);
 	}
 
 	@Override
@@ -241,6 +257,16 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// is user logged in?
+		// mPrefs = getSharedPreferences("SharedPreferences",
+		// Context.MODE_PRIVATE);
+		if (isLoggedIn) {
+		} else {
+			if (isPortrait) {
+				Intent intent = new Intent(this, LoginActivity.class);
+				startActivityForResult(intent, REQUEST_LOGIN);
+			}
+		}
 		// call mandatory live-cycle method of architectView
 		if (this.mArchitectView != null) {
 			this.mArchitectView.onResume();
@@ -322,8 +348,8 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 		case R.id.action_connected:
 			// Show dialog to prompt user if want to log in
-			SignOutDialog d = new SignOutDialog();
-			d.show(getSupportFragmentManager(), "TestDialogFragment");
+			SignOutDialog dialogSignout = new SignOutDialog();
+			dialogSignout.show(getSupportFragmentManager(), "TestDialogFragment");
 			return true;
 		case R.id.action_disconnected:
 			// Connect to Google games
@@ -336,6 +362,10 @@ public class MainActivity extends FragmentActivity implements
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			return true;
+		case R.id.action_settings:
+			SettingsDialog dialogSettings = new SettingsDialog();
+			dialogSettings.show(getSupportFragmentManager(), "SettingsDialog");
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -347,17 +377,17 @@ public class MainActivity extends FragmentActivity implements
 	 * ========================================================================
 	 */
 	public void onSMS(View v) {
-		TestDialog d = new TestDialog();
+		TicketDialog d = new TicketDialog();
 		d.show(getSupportFragmentManager(), "TestDialogFragment");
 	}
 
 	public void onCard(View v) {
-		TestListDialog d = new TestListDialog();
-		d.show(getSupportFragmentManager(), "TestDialogFragment");
+		PeriodDialog d = new PeriodDialog();
+		d.show(getSupportFragmentManager(), "CreditcardDialog");
 	}
 
 	public void onCoin(View v) {
-		TestDialog d = new TestDialog();
+		CoinDialog d = new CoinDialog();
 		d.show(getSupportFragmentManager(), "TestDialogFragment");
 	}
 
@@ -414,6 +444,21 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if (requestCode == REQUEST_LOGIN) {
+			if (resultCode == RESULT_OK) {
+				// The user picked a contact.
+				// The Intent's data Uri identifies which contact was selected.
+				isLoggedIn = true;
+				// Do something with the contact here (bigger example below)
+			} else {
+				finish();
+			}
+		}
+	}
+
 	/**
 	 * GAME HELPER CALLBACKS
 	 */
@@ -452,7 +497,7 @@ public class MainActivity extends FragmentActivity implements
 			// Set this as callback for the achievements
 			mAdapter.setName(p.getDisplayName());
 		}
-		//AppStateManager.load(mHelper.getApiClient(), 1);
+		// AppStateManager.load(mHelper.getApiClient(), 1);
 	}
 
 	public void signOut() {
@@ -515,5 +560,16 @@ public class MainActivity extends FragmentActivity implements
 
 	public Player getPlayer() {
 		return Games.Players.getCurrentPlayer(mHelper.getApiClient());
+	}
+
+	/**
+	 * Architect url listener (wikitude)
+	 */
+	@Override
+	public boolean urlWasInvoked(String arg0) {
+		// TODO Auto-generated method stub
+		debugLog("Clicked Coin: " + arg0);
+		mediaPlayer.start();
+		return false;
 	}
 }

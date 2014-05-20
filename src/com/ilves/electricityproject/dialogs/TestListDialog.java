@@ -1,4 +1,7 @@
-package com.ilves.electricityproject;
+package com.ilves.electricityproject.dialogs;
+
+import com.ilves.electricityproject.R;
+import com.ilves.electricityproject.R.array;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

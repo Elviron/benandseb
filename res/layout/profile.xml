@@ -2,103 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/ticket_name_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingBottom="2dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" >
 
-        <ImageView
-            android:id="@+id/profile_rank"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/profile_rank_descr"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_crown_2" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" >
 
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/profile_image_descr"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_user" />
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/profile_image_descr"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_user" />
+
+            <TextView
+                android:id="@+id/profile_player_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_month"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_toLeftOf="@id/profile_image"
-            android:layout_toRightOf="@id/profile_rank"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp" >
 
             <TextView
-                android:id="@+id/profile_player_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center"
-                android:textAlignment="center"
+                android:layout_weight="1"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_trophy"
+                android:gravity="center|right"
+                android:text="@string/placeholder_percent"
                 android:textSize="18sp" />
 
-            <Spinner
-                android:id="@+id/planets_spinner"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:layout_weight="1"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_current_amount"
+                android:gravity="center|right"
+                android:text="@string/placeholder_number"
+                android:textSize="18sp" />
         </LinearLayout>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_trophy" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/placeholder_number_per_number"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/placeholder_number"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_current_amount" />
     </LinearLayout>
 
     <LinearLayout
@@ -126,6 +98,13 @@
             android:layout_weight="1"
             android:background="@color/EL_icon_lightblue" />
     </LinearLayout>
+
+    <Spinner
+        android:id="@+id/planets_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_gravity="center" />
 
     <RelativeLayout
         android:layout_width="match_parent"

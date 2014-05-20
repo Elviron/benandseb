@@ -76,10 +76,10 @@
             android:layout_marginRight="0dp"
             android:layout_weight="1"
             android:background="@drawable/btn_payment_left"
-            android:contentDescription="@string/btn_sms_descr"
+            android:contentDescription="@string/btn_ticket_descr"
             android:drawableTop="@drawable/ic_smspayment"
             android:onClick="onSMS"
-            android:text="@string/btn_sms"
+            android:text="@string/btn_ticket"
             android:textColor="@color/EL_icon_bolt"
             android:textSize="12sp" />
 
@@ -94,10 +94,10 @@
             android:layout_marginRight="0dp"
             android:layout_weight="1"
             android:background="@drawable/btn_payment_middle"
-            android:contentDescription="@string/btn_creditcard_descr"
+            android:contentDescription="@string/btn_ticket_descr"
             android:drawableTop="@drawable/ic_creditcard"
             android:onClick="onCard"
-            android:text="@string/btn_creditcard"
+            android:text="@string/btn_period"
             android:textColor="@color/EL_icon_bolt"
             android:textSize="12sp" />
 

@@ -27,8 +27,6 @@ public class ProfileFragment extends Fragment implements
 	private Drawable			mProfileImage;
 	private ImageView			mProfileImageView;
 
-	private ImageView			mRankImageView;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

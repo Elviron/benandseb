@@ -12,8 +12,10 @@
     <string name="week_left">1 vecka kvar</string>
     <string name="unlocked">Upplåsta</string>
     <!-- Button strings -->
-    <string name="btn_sms">SMS</string>
-    <string name="btn_creditcard">Kreditkort</string>
+    <string name="btn_ticket">Enkelbiljett</string>
+    <string name="btn_ticket_descr">Enkelbiljett</string>
+    <string name="btn_period">Periodkort</string>
+    <string name="btn_period_descr">Periodkort</string>
     <string name="btn_electricoin">ElectriCoin</string>
     <string name="btn_achievements">Prestationer</string>
     <string name="btn_leaderboard">Topplistor</string>

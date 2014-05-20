@@ -18,7 +18,8 @@
 -->
 
 <resources>
-
+    <style name="Theme.Electricity.NoActionBar" parent="@android:style/Theme.Holo.Light.NoActionBar">
+    </style>
     <style name="Theme.Electricity" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_electricity</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Electricity</item>

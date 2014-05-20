@@ -55,13 +55,14 @@
             </intent-filter>
         </activity>
         <activity
-        android:name="com.ilves.electricityproject.LoginActivity"
-        android:label="@string/app_name"
-        android:parentActivityName="com.ilves.electricityproject.MainActivity" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.ilves.electricityproject.MainActivity" />
-    </activity>
+            android:name="com.ilves.electricityproject.LoginActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="com.ilves.electricityproject.MainActivity"
+            android:theme="@style/Theme.Electricity.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ilves.electricityproject.MainActivity" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
