@@ -71,6 +71,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_login"
         android:onClick="onLogin"
-        android:text="Log in" />
+        android:text="Log in"
+        android:textColor="@color/EL_btn_text" />
 
 </LinearLayout>

@@ -1,5 +1,13 @@
 package com.ilves.electricityproject.fragments;
 
+import java.io.File;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,17 +23,21 @@ import android.widget.TextView;
 import com.ilves.electricityproject.FragmentNotice;
 import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
+import com.ilves.electricityproject.utils.GlobalStrings;
+import com.ilves.electricityproject.utils.PrefsHelper;
 
 public class ProfileFragment extends Fragment implements
-		FragmentNotice {
+		FragmentNotice, OnSharedPreferenceChangeListener {
 
 	private static final String	TAG		= "ProfileFragment";
 
-	private TextView			nameField;
 	private String				mName	= null;
 
 	private Drawable			mProfileImage;
 	private ImageView			mProfileImageView;
+	private TextView			mProfileTextView;
+
+	private TextView	mAmountTextView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,37 +60,76 @@ public class ProfileFragment extends Fragment implements
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
-		nameField = (TextView) v.findViewById(R.id.profile_player_name);
+		mProfileTextView = (TextView) v.findViewById(R.id.profile_player_name);
 		if (mName != null) {
-			nameField.setText(mName);
+			mProfileTextView.setText(mName);
 		}
 		// ((TextView)
 		// v.findViewById(R.id.profile_ach_unlocked)).setText(mGridAdapter.getUnlocked());
 		mProfileImageView = (ImageView) v.findViewById(R.id.profile_image);
-		pasteIcon();
+		mProfileTextView = (TextView) v.findViewById(R.id.profile_player_name);
+		mAmountTextView = (TextView) v.findViewById(R.id.profile_electricoin_amount);
+		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+		//Editor editor = mSharedPrefs.edit();
+		populateFields();
 		return v;// super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	public void setName(String name) {
 		mName = name;
-		if (nameField != null) {
-			nameField.setText(mName);
+		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		Editor editor = mSharedPrefs.edit();
+		editor.putString("profile_name", name);
+		if (mProfileTextView != null) {
+			mProfileTextView.setText(mName);
 		}
 	}
 
 	public void setIcon(Drawable drawable) {
-		mProfileImage = drawable;
+		//mProfileImage = drawable;
 		if (mProfileImageView != null) {
 			pasteIcon();
 		}
 	}
 
 	public void pasteIcon() {
-		if (mProfileImage != null) {
-			mProfileImageView.setImageDrawable(mProfileImage);
+		File file = new File(getActivity().getFilesDir(), MainActivity.profileImageFilename);
+		Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+		if (bitmap != null) {
+			mProfileImageView.setImageBitmap(bitmap);
+			//mProfileImageView.setImageDrawable(mProfileImage);
+			//mProfileTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, mProfileImage, null, null);
 		} else {
 			mProfileImageView.setImageResource(R.drawable.ic_user);
+			//mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_user, 0, 0);
 		}
+	}
+	
+	/**
+	 * Update info from shared prefs and file system
+	 * image and name
+	 */
+	public void populateFields() {
+		Log.i("ProfileFragment", "populateFields");
+		File file = new File(getActivity().getFilesDir(), MainActivity.profileImageFilename);
+		Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+		if (bitmap != null) {
+			mProfileImageView.setImageBitmap(bitmap);
+			//mProfileImageView.setImageDrawable(mProfileImage);
+			//mProfileTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, mProfileImage, null, null);
+		} else {
+			mProfileImageView.setImageResource(R.drawable.ic_user);
+			//mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_user, 0, 0);
+		}
+		// put name
+		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		String name = mSharedPrefs.getString(getString(R.string.prefs_name), getString(R.string.profile_placeholder_name));
+		mProfileTextView.setText(name);
+		// put amount
+		mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		int amount = mSharedPrefs.getInt(getString(R.string.prefs_amount), 0);
+		mProfileTextView.setText(String.valueOf(amount));
 	}
 
 	/**
@@ -97,6 +148,17 @@ public class ProfileFragment extends Fragment implements
 
 	@Override
 	public void addContext(MainActivity context) {
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		// TODO Auto-generated method stub
+		if (key.equalsIgnoreCase(getString(R.string.prefs_amount))) {
+			mAmountTextView.setText(String.valueOf(sharedPreferences.getInt(GlobalStrings.prefs_amount, 0)));
+		} else {
+			// user logged in or out
+			populateFields();
+		}
 	}
 
 }

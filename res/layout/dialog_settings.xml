@@ -13,11 +13,12 @@
         android:src="@drawable/ic_action_settings" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/dialog_settings_sound_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Sounds"
+        android:checked="true"
+        android:text="@string/dialog_settings_sounds"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -29,14 +30,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Västtrafik"
+            android:text="@string/dialog_settings_vt"
             android:textSize="16sp" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Log out" />
+            android:onClick="onLogoutVasttrafik"
+            android:text="@string/dialog_settings_logout" />
     </LinearLayout>
 
     <LinearLayout
@@ -48,14 +50,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Google Play"
+            android:text="@string/dialog_settings_google"
             android:textSize="16sp" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Log out" />
+            android:onClick="onLogoutGoogle"
+            android:text="@string/dialog_settings_logout" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/electricoins"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/dialog_ticket_btn_clear"
+            android:layout_width="0dp"
+            android:onClick="onClear"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dialog_settings_clear" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- File created by the Android Action Bar Style Generator
+<!--
+     File created by the Android Action Bar Style Generator
 
      Copyright (C) 2011 The Android Open Source Project
      Copyright (C) 2012 readyState Software Ltd
@@ -18,8 +19,9 @@
 -->
 
 <resources>
-    <style name="Theme.Electricity.NoActionBar" parent="@android:style/Theme.Holo.Light.NoActionBar">
-    </style>
+
+    <style name="Theme.Electricity.NoActionBar" parent="@android:style/Theme.Holo.Light.NoActionBar"></style>
+
     <style name="Theme.Electricity" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_electricity</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Electricity</item>
@@ -30,8 +32,7 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_electricity</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_electricity</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Electricity</item>
-        
-        
+        <item name="android:seekBarStyle">@style/SeekBar.Electriity</item>
     </style>
 
     <style name="ActionBar.Solid.Electricity" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
@@ -47,7 +48,7 @@
     </style>
 
     <style name="PopupMenu.Electricity" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_electricity</item>	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_electricity</item>
     </style>
 
     <style name="DropDownListView.Electricity" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
@@ -63,11 +64,11 @@
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_electricity</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_electricity</item>
     </style>
-    
+
     <style name="ProgressBar.Electricity" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_electricity</item>
     </style>
-    
+
     <style name="ActionButton.CloseMode.Electricity" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_electricity</item>
     </style>
@@ -76,6 +77,15 @@
     <style name="Theme.Electricity.Widget" parent="@android:style/Theme.Holo">
         <item name="android:popupMenuStyle">@style/PopupMenu.Electricity</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Electricity</item>
+    </style>
+
+    <style name="SeekBar.Electriity" parent="android:Widget.Holo.Light.SeekBar">
+
+        <!--
+      <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+        -->
+        <item name="android:thumb">@drawable/ic_seekbar_thumb</item>
     </style>
 
 </resources>

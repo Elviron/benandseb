@@ -1,5 +1,7 @@
 package com.ilves.electricityproject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.ActionBar;
@@ -10,8 +12,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -19,7 +23,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -39,8 +42,9 @@ import com.ilves.electricityproject.GameHelper.GameHelperListener;
 import com.ilves.electricityproject.dialogs.CoinDialog;
 import com.ilves.electricityproject.dialogs.PeriodDialog;
 import com.ilves.electricityproject.dialogs.SettingsDialog;
+import com.ilves.electricityproject.dialogs.SettingsDialog.SettingsDialogListener;
 import com.ilves.electricityproject.dialogs.TicketDialog;
-import com.ilves.electricityproject.dialogs.TestDialog;
+import com.ilves.electricityproject.utils.ImageHelper;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectConfig;
 import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
@@ -49,7 +53,8 @@ import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 public class MainActivity extends FragmentActivity implements
 		GameHelperListener,
 		OnImageLoadedListener,
-		ArchitectUrlListener {
+		ArchitectUrlListener,
+		SettingsDialogListener {
 
 	private static final String				TAG						= "MainActivity";
 
@@ -103,13 +108,13 @@ public class MainActivity extends FragmentActivity implements
 
 	private static final int				REQUEST_LOGIN			= 50001;
 
-	private String							LEADERBOARD_ID;
-
 	private int								SEND_GIFT_CODE			= 41001;
 
-	private SharedPreferences				mPrefs;
-
 	private MediaPlayer						mediaPlayer;
+
+	private SharedPreferences				mSharedPrefs;
+
+	public static String					profileImageFilename	= "profile_image.png";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +136,8 @@ public class MainActivity extends FragmentActivity implements
 				WebView.setWebContentsDebuggingEnabled(true);
 			}
 		}
+		// get prefs
+		mSharedPrefs = getPreferences(Context.MODE_PRIVATE);
 		// Location stuff
 		mLocationClient = new ElectriCityLocationClient(this);
 		// Google play services
@@ -260,12 +267,12 @@ public class MainActivity extends FragmentActivity implements
 		// is user logged in?
 		// mPrefs = getSharedPreferences("SharedPreferences",
 		// Context.MODE_PRIVATE);
-		if (isLoggedIn) {
-		} else {
-			if (isPortrait) {
-				Intent intent = new Intent(this, LoginActivity.class);
-				startActivityForResult(intent, REQUEST_LOGIN);
-			}
+
+		boolean loggedin = mSharedPrefs.getBoolean(getString(R.string.prefs_logged_in),
+				false);
+		if (!loggedin) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivityForResult(intent, REQUEST_LOGIN);
 		}
 		// call mandatory live-cycle method of architectView
 		if (this.mArchitectView != null) {
@@ -401,7 +408,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onLead(View v) {
 		if (mHelper.isSignedIn()) {
 			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mHelper.getApiClient(),
-					getString(R.string.leaderboard_who_has_the_most_coins)),
+					getString(R.string.leaderboard_most_coins)),
 					REQUEST_LEADERBOARD);
 		}
 	}
@@ -411,9 +418,26 @@ public class MainActivity extends FragmentActivity implements
 				GameRequest.TYPE_GIFT,
 				"".getBytes(),
 				2,
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_games_gifts),
+				BitmapFactory.decodeResource(getResources(), R.drawable.ic_electricoins),
 				"Send stuff");
 		startActivityForResult(intent, SEND_GIFT_CODE);
+	}
+
+	public void onClear(View v) {
+		debugLog("Clear coins");
+		SharedPreferences.Editor editor = mSharedPrefs.edit();
+		editor.putInt(getString(R.string.prefs_amount), 0);
+		editor.commit();
+	}
+
+	public void onLogoutVasttrafik(View v) {
+		SharedPreferences.Editor editor = mSharedPrefs.edit();
+		editor.putBoolean(getString(R.string.prefs_logged_in), false);
+		editor.commit();
+	}
+
+	public void onLogoutGoogle(View v) {
+		mHelper.signOut();
 	}
 
 	/**
@@ -453,6 +477,9 @@ public class MainActivity extends FragmentActivity implements
 				// The Intent's data Uri identifies which contact was selected.
 				isLoggedIn = true;
 				// Do something with the contact here (bigger example below)
+				SharedPreferences.Editor editor = mSharedPrefs.edit();
+				editor.putBoolean(getString(R.string.prefs_logged_in), isLoggedIn);
+				editor.commit();
 			} else {
 				finish();
 			}
@@ -467,7 +494,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onSignInFailed() {
 		Log.i(TAG, "onSignInFailed");
 		// TODO Auto-generated method stub
-		// Switch icons in menu
+		// Switch icons in actionbar / menu
 		invalidateOptionsMenu();
 		mAdapter.setName("Please sign in");
 	}
@@ -483,8 +510,12 @@ public class MainActivity extends FragmentActivity implements
 				Games.Players.getCurrentPlayer(mHelper.getApiClient()).getDisplayName(),
 				Toast.LENGTH_SHORT).show();
 		Player p = getPlayer();
-		ImageManager iManager = ImageManager.create(this);
-		iManager.loadImage(this, p.getIconImageUri());
+		// Check if profile image exists, if not, download
+		File file = new File(getFilesDir(), profileImageFilename);
+		if (!file.exists()) {
+			ImageManager iManager = ImageManager.create(this);
+			iManager.loadImage(this, p.getIconImageUri());
+		}
 		// Log all info from player
 		debugLog("Name:            " + p.getDisplayName());
 		debugLog("ID:              " + p.getPlayerId());
@@ -495,7 +526,11 @@ public class MainActivity extends FragmentActivity implements
 
 		if (isPortrait) {
 			// Set this as callback for the achievements
-			mAdapter.setName(p.getDisplayName());
+			//mAdapter.setName(p.getDisplayName());
+			// Save name to prefs
+			Editor editor = mSharedPrefs.edit();
+			editor.putString(getString(R.string.prefs_name), p.getDisplayName());
+			editor.commit();
 		}
 		// AppStateManager.load(mHelper.getApiClient(), 1);
 	}
@@ -510,42 +545,27 @@ public class MainActivity extends FragmentActivity implements
 		mHelper.connect();
 	}
 
-	public class SignOutDialog extends DialogFragment {
-
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			// Use the Builder class for convenient dialog construction
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setMessage("Do you really want to sign out?")
-					.setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-							// Call sign out
-							Log.i(TAG, "PositiveButton");
-							mHelper.signOut();
-							mAdapter.setName("Please sign in");
-							mAdapter.setIcon(null);
-							invalidateOptionsMenu();
-						}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-							// User cancelled the dialog
-						}
-					});
-			// Create the AlertDialog object and return it
-			return builder.create();
-		}
-
-	}
-
 	@Override
 	public void onImageLoaded(Uri uri, Drawable drawable, boolean isRequestedDrawable) {
 		// Send profile image to profile fragment
 		debugLog("onImageLoaded");
+		File file = new File(getFilesDir(), profileImageFilename);
 		if (isPortrait) {
-			mAdapter.setIcon(drawable);
+			FileOutputStream out = null;
+			Bitmap bmp = ImageHelper.drawableToBitmap(drawable);
+			Bitmap bmpRound = ImageHelper.getRoundedCornerBitmap(bmp, 20);
+			try {
+				out = new FileOutputStream(file);
+				bmpRound.compress(Bitmap.CompressFormat.PNG, 90, out);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					out.close();
+				} catch (Throwable ignore) {
+				}
+			}
+			mAdapter.populateFields();
 		}
 	}
 
@@ -569,7 +589,71 @@ public class MainActivity extends FragmentActivity implements
 	public boolean urlWasInvoked(String arg0) {
 		// TODO Auto-generated method stub
 		debugLog("Clicked Coin: " + arg0);
-		mediaPlayer.start();
+		boolean highScore = mSharedPrefs.getBoolean(getString(R.string.prefs_sound),
+				false);
+		if (highScore) {
+			mediaPlayer.start();
+		}
+		int coins = mSharedPrefs.getInt(getString(R.string.prefs_amount), 0);
+		coins++;
+		SharedPreferences.Editor editor = mSharedPrefs.edit();
+		editor.putInt(getString(R.string.prefs_amount), coins);
+		editor.commit();
 		return false;
+	}
+
+	/**
+	 * SETTINGS DIALOG LISTENERS
+	 */
+	@Override
+	public void onDialogPositiveClick(SettingsDialog dialog) {
+		// dialog.soundOn;
+		SharedPreferences.Editor editor = mSharedPrefs.edit();
+		editor.putBoolean(getString(R.string.prefs_sound), dialog.soundOn);
+		editor.commit();
+		dialog.dismiss();
+	}
+
+	@Override
+	public void onDialogNegativeClick(SettingsDialog dialog) {
+		dialog.dismiss();
+	}
+
+	public class SignOutDialog extends DialogFragment {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the Builder class for convenient dialog construction
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage("Do you really want to sign out from Google Play?")
+					.setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							// Call sign out
+							Log.i(TAG, "PositiveButton");
+							mHelper.signOut();
+							// remove profile image
+							File file = new File(getFilesDir(), profileImageFilename);
+							file.delete();
+							// remove name
+							Editor editor = mSharedPrefs.edit();
+							editor.remove(getString(R.string.prefs_name));
+							editor.commit();
+							// update profile fragment
+							//mAdapter.populateFields();
+							// update action bar
+							invalidateOptionsMenu();
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							// User cancelled the dialog
+						}
+					});
+			// Create the AlertDialog object and return it
+			return builder.create();
+		}
+
 	}
 }

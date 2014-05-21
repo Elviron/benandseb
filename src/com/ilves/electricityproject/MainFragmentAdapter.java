@@ -95,12 +95,12 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 	}
 	
 	public void setName(String name) {
-		pf.setName(name);
+		//pf.setName(name);
 	}
 
-	public void setIcon(Drawable drawable) {
+	public void populateFields() {
 		// TODO Auto-generated method stub
-		pf.setIcon(drawable);
+		pf.populateFields();
 	}
 
 }

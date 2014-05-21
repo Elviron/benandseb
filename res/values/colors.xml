@@ -19,5 +19,10 @@
     <color name="EL_icon_darkblue">#FF3192bb</color>
     <color name="EL_icon_white">#FFe8faff </color>
     <color name="EL_icon_green">#FF43c771</color>
+    <color name="EL_btn_text">#FFe8faff</color>
+    <color name="EL_battery_dark">#FF9f9f9f</color>
+    <color name="EL_battery_light">#FFcdcdcd</color>
+    <color name="EL_battery_label">#55000000</color>
+    <color name="EL_battery_color">#FF35fd5a</color>
 
 </resources>

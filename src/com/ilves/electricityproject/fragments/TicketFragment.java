@@ -16,7 +16,7 @@ public class TicketFragment extends Fragment implements
 		FragmentNotice {
 
 	private MainActivity	mContext;
-	private ImageView mBattery;
+	private ImageView		mBattery;
 	private Runnable		runnable;
 	private Handler			handler		= new Handler();
 	private int				updateTime	= 1000;
@@ -38,9 +38,9 @@ public class TicketFragment extends Fragment implements
 	}
 
 	protected void updateViews() {
-		
+
 		// TODO Auto-generated method stub
-		mBattery.setImageResource(getImageResource(mLevel));
+		// mBattery.setImageResource(getImageResource(mLevel));
 		mLevel++;
 		if (mLevel > 7) {
 			mLevel = 0;
@@ -77,7 +77,7 @@ public class TicketFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.ticket, container, false);
-		mBattery = (ImageView) v.findViewById(R.id.ticket_battery_image);
+		// mBattery = (ImageView) v.findViewById(R.id.ti);
 		return v;// super.onCreateView(inflater, container, savedInstanceState);
 	}
 
@@ -102,7 +102,7 @@ public class TicketFragment extends Fragment implements
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		//handler.postDelayed(runnable, updateTime);
+		// handler.postDelayed(runnable, updateTime);
 		super.onStart();
 	}
 
