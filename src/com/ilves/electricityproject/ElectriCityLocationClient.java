@@ -40,7 +40,7 @@ public class ElectriCityLocationClient implements
 	private static final long	FASTEST_INTERVAL			= MILLISECONDS_PER_SECOND
 																	* FASTEST_INTERVAL_IN_SECONDS;
 	// Define an object that holds accuracy and frequency parameters
-	LocationRequest				mLocationRequest;
+	private LocationRequest		mLocationRequest;
 	private SharedPreferences	mPrefs;
 	private Editor				mEditor;
 
@@ -73,12 +73,13 @@ public class ElectriCityLocationClient implements
 		// TODO Auto-generated method stub
 		if (location != null) {
 			// Report to the UI that the location was updated
-			String msg = "LocationManager Location: " + Double.toString(location.getLatitude())
-					+ "," + Double.toString(location.getLongitude());
+			String msg = "LocationManager Location: "
+					+ Double.toString(location.getLatitude()) + ","
+					+ Double.toString(location.getLongitude());
 			Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
 			mContext.updateLocationInWikitude(location);
 		}
-		
+
 	}
 
 	public void onPause() {

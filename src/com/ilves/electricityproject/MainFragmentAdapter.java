@@ -6,16 +6,12 @@ package com.ilves.electricityproject;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.google.android.gms.games.Games;
 import com.ilves.electricityproject.fragments.BusesFragment;
 import com.ilves.electricityproject.fragments.ProfileFragment;
-import com.ilves.electricityproject.fragments.TestFragment;
 import com.ilves.electricityproject.fragments.TicketFragment;
 
 /**

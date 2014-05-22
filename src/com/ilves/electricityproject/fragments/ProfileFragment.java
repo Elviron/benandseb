@@ -24,7 +24,6 @@ import com.ilves.electricityproject.FragmentNotice;
 import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
 import com.ilves.electricityproject.utils.GlobalStrings;
-import com.ilves.electricityproject.utils.PrefsHelper;
 
 public class ProfileFragment extends Fragment implements
 		FragmentNotice, OnSharedPreferenceChangeListener {
@@ -33,7 +32,6 @@ public class ProfileFragment extends Fragment implements
 
 	private String				mName	= null;
 
-	private Drawable			mProfileImage;
 	private ImageView			mProfileImageView;
 	private TextView			mProfileTextView;
 
@@ -81,6 +79,7 @@ public class ProfileFragment extends Fragment implements
 		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
 		Editor editor = mSharedPrefs.edit();
 		editor.putString("profile_name", name);
+		editor.commit();
 		if (mProfileTextView != null) {
 			mProfileTextView.setText(mName);
 		}
@@ -156,7 +155,7 @@ public class ProfileFragment extends Fragment implements
 		if (key.equalsIgnoreCase(getString(R.string.prefs_amount))) {
 			mAmountTextView.setText(String.valueOf(sharedPreferences.getInt(GlobalStrings.prefs_amount, 0)));
 		} else {
-			// user logged in or out
+			// user logged in or out, update fields
 			populateFields();
 		}
 	}
