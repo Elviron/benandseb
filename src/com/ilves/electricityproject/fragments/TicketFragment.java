@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.ilves.electricityproject.FragmentNotice;
 import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
 
-public class TicketFragment extends Fragment implements
-		FragmentNotice {
+public class TicketFragment extends Fragment {
 
 	private MainActivity	mContext;
 	private ImageView		mBattery;
@@ -79,24 +77,6 @@ public class TicketFragment extends Fragment implements
 		View v = inflater.inflate(R.layout.ticket, container, false);
 		// mBattery = (ImageView) v.findViewById(R.id.ti);
 		return v;// super.onCreateView(inflater, container, savedInstanceState);
-	}
-
-	@Override
-	public void noticeActive() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void noticeInactive() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addContext(MainActivity context) {
-		// TODO Auto-generated method stub
-		mContext = context;
 	}
 
 	@Override

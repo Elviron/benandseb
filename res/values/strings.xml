@@ -55,11 +55,6 @@
     <string name="dialog_settings_google">Google Play</string>
     <string name="dialog_settings_logout">Log out</string>
     <string name="dialog_settings_clear">Clear</string>
-    <!-- Prefs strings -->
-    <string name="prefs_amount">electricoins_amount</string>
-    <string name="prefs_sound">sound_on</string>
-    <string name="prefs_logged_in">logged_in</string>
-    <string name="prefs_name">profile_name</string>
 
     <string-array name="colors_array">
         <item>Red</item>

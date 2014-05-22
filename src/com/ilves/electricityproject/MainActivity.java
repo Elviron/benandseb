@@ -31,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.common.images.ImageManager.OnImageLoadedListener;
@@ -42,7 +41,6 @@ import com.ilves.electricityproject.GameHelper.GameHelperListener;
 import com.ilves.electricityproject.dialogs.CoinDialog;
 import com.ilves.electricityproject.dialogs.PeriodDialog;
 import com.ilves.electricityproject.dialogs.SettingsDialog;
-import com.ilves.electricityproject.dialogs.SettingsDialog.SettingsDialogListener;
 import com.ilves.electricityproject.dialogs.TicketDialog;
 import com.ilves.electricityproject.utils.ImageHelper;
 import com.wikitude.architect.ArchitectView;
@@ -53,13 +51,20 @@ import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 public class MainActivity extends FragmentActivity implements
 		GameHelperListener,
 		OnImageLoadedListener,
-		ArchitectUrlListener,
-		SettingsDialogListener {
+		ArchitectUrlListener {
 
 	private static final String				TAG						= "MainActivity";
+	public static final String				profileImageFilename	= "profile_image.png";
+	public static final String				prefs_amount			= "electricoins_amount";
+	public static final String				prefs_sound				= "sound_on";
+	public static final String				prefs_logged_in			= "logged_in";
+	public static final String				prefs_name				= "profile_name";
+	
+	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
+	private static final int				REQUEST_LEADERBOARD		= 40002;
+	private static final int				REQUEST_LOGIN			= 50001;
 
 	private boolean							isPortrait;
-	private boolean							isLoggedIn				= false;
 	private ViewPager						mViewPager;
 	private MainFragmentAdapter				mAdapter;
 	/**
@@ -90,7 +95,7 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Games client
 	 */
-	GameHelper								mHelper;
+	private GameHelper						mHelper;
 	// Request code to use when launching the resolution activity
 	private static final int				REQUEST_RESOLVE_ERROR	= 1001;
 	// Unique tag for the error dialog fragment
@@ -98,23 +103,13 @@ public class MainActivity extends FragmentActivity implements
 	// Bool to track whether the app is already resolving an error
 	private boolean							mResolvingError			= false;
 
-	private View							connectedButton;
-
-	private View							disconnectedButton;
-
 	private static final String				STATE_RESOLVING_ERROR	= "resolving_error";
-	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
-	private static final int				REQUEST_LEADERBOARD		= 40002;
-
-	private static final int				REQUEST_LOGIN			= 50001;
 
 	private int								SEND_GIFT_CODE			= 41001;
 
 	private MediaPlayer						mediaPlayer;
 
 	private SharedPreferences				mSharedPrefs;
-
-	public static String					profileImageFilename	= "profile_image.png";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -268,8 +263,7 @@ public class MainActivity extends FragmentActivity implements
 		// mPrefs = getSharedPreferences("SharedPreferences",
 		// Context.MODE_PRIVATE);
 
-		boolean loggedin = mSharedPrefs.getBoolean(getString(R.string.prefs_logged_in),
-				false);
+		boolean loggedin = mSharedPrefs.getBoolean(prefs_logged_in, false);
 		if (!loggedin) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivityForResult(intent, REQUEST_LOGIN);
@@ -338,7 +332,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		if (mHelper.isSignedIn()) {
 			menu.findItem(R.id.action_connected).setVisible(true);
 			menu.findItem(R.id.action_disconnected).setVisible(false);
@@ -426,13 +419,13 @@ public class MainActivity extends FragmentActivity implements
 	public void onClear(View v) {
 		debugLog("Clear coins");
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
-		editor.putInt(getString(R.string.prefs_amount), 0);
+		editor.putInt(prefs_amount, 0);
 		editor.commit();
 	}
 
 	public void onLogoutVasttrafik(View v) {
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
-		editor.putBoolean(getString(R.string.prefs_logged_in), false);
+		editor.putBoolean(prefs_logged_in, false);
 		editor.commit();
 	}
 
@@ -470,15 +463,13 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		if (requestCode == REQUEST_LOGIN) {
 			if (resultCode == RESULT_OK) {
 				// The user picked a contact.
 				// The Intent's data Uri identifies which contact was selected.
-				isLoggedIn = true;
 				// Do something with the contact here (bigger example below)
 				SharedPreferences.Editor editor = mSharedPrefs.edit();
-				editor.putBoolean(getString(R.string.prefs_logged_in), isLoggedIn);
+				editor.putBoolean(prefs_logged_in, true);
 				editor.commit();
 			} else {
 				finish();
@@ -493,7 +484,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onSignInFailed() {
 		Log.i(TAG, "onSignInFailed");
-		// TODO Auto-generated method stub
 		// Switch icons in actionbar / menu
 		invalidateOptionsMenu();
 		mAdapter.setName("Please sign in");
@@ -506,9 +496,11 @@ public class MainActivity extends FragmentActivity implements
 		invalidateOptionsMenu();
 		// Notify profile fragment that we are signed in, show log out button
 		// mAdapter.getPf().signInSuccessful();
-		Toast.makeText(this,
-				Games.Players.getCurrentPlayer(mHelper.getApiClient()).getDisplayName(),
-				Toast.LENGTH_SHORT).show();
+		/*
+		 * Toast.makeText(this,
+		 * Games.Players.getCurrentPlayer(mHelper.getApiClient
+		 * ()).getDisplayName(), Toast.LENGTH_SHORT).show();
+		 */
 		Player p = getPlayer();
 		// Check if profile image exists, if not, download
 		File file = new File(getFilesDir(), profileImageFilename);
@@ -526,22 +518,20 @@ public class MainActivity extends FragmentActivity implements
 
 		if (isPortrait) {
 			// Set this as callback for the achievements
-			//mAdapter.setName(p.getDisplayName());
+			// mAdapter.setName(p.getDisplayName());
 			// Save name to prefs
 			Editor editor = mSharedPrefs.edit();
-			editor.putString(getString(R.string.prefs_name), p.getDisplayName());
+			editor.putString(prefs_name, p.getDisplayName());
 			editor.commit();
 		}
 		// AppStateManager.load(mHelper.getApiClient(), 1);
 	}
 
 	public void signOut() {
-		// TODO Auto-generated method stub
 		mHelper.disconnect();
 	}
 
 	public void signIn() {
-		// TODO Auto-generated method stub
 		mHelper.connect();
 	}
 
@@ -587,36 +577,17 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean urlWasInvoked(String arg0) {
-		// TODO Auto-generated method stub
 		debugLog("Clicked Coin: " + arg0);
-		boolean highScore = mSharedPrefs.getBoolean(getString(R.string.prefs_sound),
-				false);
+		boolean highScore = mSharedPrefs.getBoolean(prefs_sound, false);
 		if (highScore) {
 			mediaPlayer.start();
 		}
-		int coins = mSharedPrefs.getInt(getString(R.string.prefs_amount), 0);
+		int coins = mSharedPrefs.getInt(prefs_amount, 0);
 		coins++;
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
-		editor.putInt(getString(R.string.prefs_amount), coins);
+		editor.putInt(prefs_amount, coins);
 		editor.commit();
 		return false;
-	}
-
-	/**
-	 * SETTINGS DIALOG LISTENERS
-	 */
-	@Override
-	public void onDialogPositiveClick(SettingsDialog dialog) {
-		// dialog.soundOn;
-		SharedPreferences.Editor editor = mSharedPrefs.edit();
-		editor.putBoolean(getString(R.string.prefs_sound), dialog.soundOn);
-		editor.commit();
-		dialog.dismiss();
-	}
-
-	@Override
-	public void onDialogNegativeClick(SettingsDialog dialog) {
-		dialog.dismiss();
 	}
 
 	public class SignOutDialog extends DialogFragment {
@@ -637,10 +608,10 @@ public class MainActivity extends FragmentActivity implements
 							file.delete();
 							// remove name
 							Editor editor = mSharedPrefs.edit();
-							editor.remove(getString(R.string.prefs_name));
+							editor.remove(prefs_name);
 							editor.commit();
 							// update profile fragment
-							//mAdapter.populateFields();
+							// mAdapter.populateFields();
 							// update action bar
 							invalidateOptionsMenu();
 						}

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -146,7 +145,7 @@ public class ElectriCityLocationClient implements
 		if (location != null) {
 			String msg = "Got Location: " + Double.toString(location.getLatitude()) + ","
 					+ Double.toString(location.getLongitude());
-			Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+			//Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
 			Log.i("Location", msg);
 			mContext.updateLocationInWikitude(location);
 		}
@@ -170,7 +169,7 @@ public class ElectriCityLocationClient implements
 			// Report to the UI that the location was updated
 			String msg = "Updated Location: " + Double.toString(location.getLatitude())
 					+ "," + Double.toString(location.getLongitude());
-			Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+			//Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
 			mContext.updateLocationInWikitude(location);
 		}
 

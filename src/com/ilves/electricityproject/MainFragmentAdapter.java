@@ -20,24 +20,23 @@ import com.ilves.electricityproject.fragments.TicketFragment;
  */
 public class MainFragmentAdapter extends FragmentPagerAdapter {
 
-	private MainActivity			mContext;
-	private List<FragmentNotice>	list;
-	private TicketFragment			tf;
+	private MainActivity	mContext;
+	private List<Fragment>	list;
+	private TicketFragment	tf;
 
-	private ProfileFragment			pf;
+	private ProfileFragment	pf;
 	private BusesFragment	bf;
 
 	public MainFragmentAdapter(FragmentManager fragmentManager, MainActivity mainActivity) {
 		super(fragmentManager);
 		mContext = mainActivity;
-		list = new ArrayList<FragmentNotice>();
+		list = new ArrayList<Fragment>();
 		// Add pages
 		tf = new TicketFragment();
 		list.add(tf);
 		bf = new BusesFragment();
 		list.add(bf);
 		pf = new ProfileFragment();
-		pf.addContext(mContext);
 		list.add(pf);
 	}
 
@@ -79,7 +78,6 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 
 	public void setActive(int position) {
 		// TODO Auto-generated method stub
-		list.get(position).noticeActive();
 	}
 
 	public TicketFragment getTf() {
@@ -89,9 +87,9 @@ public class MainFragmentAdapter extends FragmentPagerAdapter {
 	public ProfileFragment getPf() {
 		return pf;
 	}
-	
+
 	public void setName(String name) {
-		//pf.setName(name);
+		// pf.setName(name);
 	}
 
 	public void populateFields() {
