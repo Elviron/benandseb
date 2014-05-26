@@ -99,11 +99,11 @@ public class ProfileFragment extends Fragment implements
 				// mProfileImageView.setImageDrawable(mProfileImage);
 				// mProfileTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
 				// mProfileImage, null, null);
-			} else {
-				mProfileImageView.setImageResource(R.drawable.ic_user);
-				// mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0,
-				// R.drawable.ic_user, 0, 0);
 			}
+		} else {
+			mProfileImageView.setImageResource(R.drawable.ic_user);
+			// mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0,
+			// R.drawable.ic_user, 0, 0);
 		}
 		// put name
 		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);

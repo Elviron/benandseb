@@ -3,6 +3,10 @@ package com.ilves.electricityproject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -578,8 +582,10 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean urlWasInvoked(String arg0) {
 		debugLog("Clicked Coin: " + arg0);
-		boolean highScore = mSharedPrefs.getBoolean(prefs_sound, false);
-		if (highScore) {
+		debugLog("Clicked Coin: " + arg0.substring("architectsdk://".length()));
+		
+		boolean sound = mSharedPrefs.getBoolean(prefs_sound, false);
+		if (sound) {
 			mediaPlayer.start();
 		}
 		int coins = mSharedPrefs.getInt(prefs_amount, 0);

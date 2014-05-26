@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/buses_list_item_image"
-        android:src="@drawable/stop_gotaplatsen"
         android:layout_width="match_parent"
-        android:scaleType="fitCenter"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/stop_gotaplatsen" />
 
 </LinearLayout>

@@ -56,6 +56,13 @@
     <string name="dialog_settings_logout">Log out</string>
     <string name="dialog_settings_clear">Clear</string>
 
+    <string-array name="stations_array">
+        <item>Lindholmen</item>
+        <item>Frihamnen</item>
+        <item>Korsvägen</item>
+        <item>Götaplatsen</item>
+        <item>Johanneberg</item>
+    </string-array>
     <string-array name="colors_array">
         <item>Red</item>
         <item>Green</item>
