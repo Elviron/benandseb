@@ -18,6 +18,9 @@
     <string name="action_login">Log in</string>
     <string name="action_login_text">with västtrafik account</string>
     <string name="ticket">Ticket</string>
+    <string name="ticket_days_left">days left</string>
+    <string name="ticket_fill">Charge</string>
+    <string name="ticket_up">please</string>
     <string name="buses">Buses</string>
     <string name="profile">Profile</string>
     <string name="profile_track">Track</string>
@@ -55,6 +58,9 @@
     <string name="dialog_settings_google">Google Play</string>
     <string name="dialog_settings_logout">Log out</string>
     <string name="dialog_settings_clear">Clear</string>
+    <string name="dialog_settings_add">+10</string>
+    <string name="dialog_settings_battery">Battery</string>
+    <string name="dialog_settings_depleat">Depleat</string>
 
     <string-array name="stations_array">
         <item>Lindholmen</item>
@@ -73,7 +79,7 @@
         <item>Achieveaholic</item>
         <item>Zombie</item>
         <item>Big-hearted</item>
-        <item>Master of Coin</item>
+        <item>King of Coin</item>
     </string-array>
 
     <!-- Placeholder Strings -->

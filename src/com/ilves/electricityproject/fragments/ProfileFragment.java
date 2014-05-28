@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -24,7 +26,7 @@ import com.ilves.electricityproject.R;
 import com.ilves.electricityproject.utils.GlobalStrings;
 
 public class ProfileFragment extends Fragment implements
-		OnSharedPreferenceChangeListener {
+		OnSharedPreferenceChangeListener, OnItemSelectedListener {
 
 	private static final String	TAG		= "ProfileFragment";
 
@@ -34,6 +36,8 @@ public class ProfileFragment extends Fragment implements
 	private TextView			mProfileTextView;
 
 	private TextView			mAmountTextView;
+	
+	private ImageView mProfileTrackImage;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,9 @@ public class ProfileFragment extends Fragment implements
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(this);
+		mProfileTrackImage = (ImageView) v.findViewById(R.id.profile_track_image);
+		selectImage(spinner.getSelectedItemPosition());
 		mProfileTextView = (TextView) v.findViewById(R.id.profile_player_name);
 		if (mName != null) {
 			mProfileTextView.setText(mName);
@@ -90,30 +97,32 @@ public class ProfileFragment extends Fragment implements
 	 */
 	public void populateFields() {
 		Log.i("ProfileFragment", "populateFields");
-		File file = new File(getActivity().getFilesDir(),
-				MainActivity.profileImageFilename);
-		if (file.exists()) {
-			Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
-			if (bitmap != null) {
-				mProfileImageView.setImageBitmap(bitmap);
-				// mProfileImageView.setImageDrawable(mProfileImage);
-				// mProfileTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-				// mProfileImage, null, null);
+		if (getActivity() != null) {
+			File file = new File(getActivity().getFilesDir(),
+					MainActivity.profileImageFilename);
+			if (file.exists()) {
+				Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+				if (bitmap != null) {
+					mProfileImageView.setImageBitmap(bitmap);
+					// mProfileImageView.setImageDrawable(mProfileImage);
+					// mProfileTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+					// mProfileImage, null, null);
+				}
+			} else {
+				mProfileImageView.setImageResource(R.drawable.ic_user);
+				// mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0,
+				// R.drawable.ic_user, 0, 0);
 			}
-		} else {
-			mProfileImageView.setImageResource(R.drawable.ic_user);
-			// mProfileTextView.setCompoundDrawablesWithIntrinsicBounds(0,
-			// R.drawable.ic_user, 0, 0);
+			// put name
+			SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+			String name = mSharedPrefs.getString(MainActivity.prefs_name,
+					getString(R.string.profile_placeholder_name));
+			mProfileTextView.setText(name);
+			// put amount
+			mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+			int amount = mSharedPrefs.getInt(MainActivity.prefs_amount, 0);
+			mAmountTextView.setText(String.valueOf(amount));
 		}
-		// put name
-		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-		String name = mSharedPrefs.getString(MainActivity.prefs_name,
-				getString(R.string.profile_placeholder_name));
-		mProfileTextView.setText(name);
-		// put amount
-		mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-		int amount = mSharedPrefs.getInt(MainActivity.prefs_amount, 0);
-		mAmountTextView.setText(String.valueOf(amount));
 	}
 
 	/**
@@ -127,12 +136,48 @@ public class ProfileFragment extends Fragment implements
 			// then do nothing
 		} else if (key.equalsIgnoreCase(MainActivity.prefs_amount)) {
 			// update amount field
-			mAmountTextView.setText(String.valueOf(sharedPreferences.getInt(GlobalStrings.prefs_amount,
-					0)));
+			if (mAmountTextView != null) {
+				mAmountTextView.setText(String.valueOf(sharedPreferences.getInt(GlobalStrings.prefs_amount,
+						0)));
+			}
 		} else {
 			// user logged in or out, update fields
 			populateFields();
 		}
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		// TODO Auto-generated method stub
+		selectImage(position);
+	}
+	
+	private void selectImage(int position) {
+		switch (position) {
+		case 0:
+			mProfileTrackImage.setImageResource(R.drawable.ic_track_enviromentalist);
+			break;
+		case 1:
+			mProfileTrackImage.setImageResource(R.drawable.ic_track_achievaholic);
+			break;
+		case 2:
+			mProfileTrackImage.setImageResource(R.drawable.ic_track_zombie);
+			break;
+		case 3:
+			mProfileTrackImage.setImageResource(R.drawable.ic_track_big_hearted);
+			break;
+		case 4:
+			mProfileTrackImage.setImageResource(R.drawable.ic_track_king);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -16,10 +16,15 @@
         android:id="@+id/dialog_settings_sound_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:checked="true"
+        android:padding="10dp"
         android:text="@string/dialog_settings_sounds"
         android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/EL_battery_light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,12 +39,18 @@
             android:textSize="16sp" />
 
         <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onLogoutVasttrafik"
             android:text="@string/dialog_settings_logout" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/EL_battery_light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,12 +65,59 @@
             android:textSize="16sp" />
 
         <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onLogoutGoogle"
             android:text="@string/dialog_settings_logout" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/EL_battery_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/electricoins"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/dialog_ticket_btn_clear"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onClearCoins"
+                android:text="@string/dialog_settings_clear" />
+
+            <Button
+                android:id="@+id/dialog_ticket_btn_add"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onAddCoins"
+                android:text="@string/dialog_settings_add" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/EL_battery_light" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,16 +128,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/electricoins"
+            android:text="@string/dialog_settings_battery"
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/dialog_ticket_btn_clear"
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
-            android:onClick="onClear"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dialog_settings_clear" />
+            android:onClick="onDepleat"
+            android:text="@string/dialog_settings_depleat" />
     </LinearLayout>
 
 </LinearLayout>

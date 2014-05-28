@@ -8,6 +8,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -57,13 +62,14 @@ public class MainActivity extends FragmentActivity implements
 		OnImageLoadedListener,
 		ArchitectUrlListener {
 
-	private static final String				TAG						= "MainActivity";
+	public static final String				TAG						= "MainActivity";
 	public static final String				profileImageFilename	= "profile_image.png";
 	public static final String				prefs_amount			= "electricoins_amount";
 	public static final String				prefs_sound				= "sound_on";
 	public static final String				prefs_logged_in			= "logged_in";
 	public static final String				prefs_name				= "profile_name";
-	
+	public static final String				prefs_end_of_card		= "end_of_card";
+
 	private static final int				REQUEST_ACHIEVEMENTS	= 40001;
 	private static final int				REQUEST_LEADERBOARD		= 40002;
 	private static final int				REQUEST_LOGIN			= 50001;
@@ -114,6 +120,7 @@ public class MainActivity extends FragmentActivity implements
 	private MediaPlayer						mediaPlayer;
 
 	private SharedPreferences				mSharedPrefs;
+	private Object							mBatteryDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -142,8 +149,6 @@ public class MainActivity extends FragmentActivity implements
 		// Google play services
 		mHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
 		mHelper.setup(this);
-
-		// Get log in button
 
 		// get viewpager
 		switch (getResources().getConfiguration().orientation) {
@@ -420,10 +425,18 @@ public class MainActivity extends FragmentActivity implements
 		startActivityForResult(intent, SEND_GIFT_CODE);
 	}
 
-	public void onClear(View v) {
+	public void onClearCoins(View v) {
 		debugLog("Clear coins");
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
 		editor.putInt(prefs_amount, 0);
+		editor.commit();
+	}
+
+	public void onAddCoins(View v) {
+		debugLog("Clear coins");
+		int coins = mSharedPrefs.getInt(prefs_amount, 0) + 10;
+		SharedPreferences.Editor editor = mSharedPrefs.edit();
+		editor.putInt(prefs_amount, coins);
 		editor.commit();
 	}
 
@@ -435,6 +448,12 @@ public class MainActivity extends FragmentActivity implements
 
 	public void onLogoutGoogle(View v) {
 		mHelper.signOut();
+	}
+
+	public void onDepleat(View v) {
+		Editor editor = mSharedPrefs.edit();
+		editor.remove(prefs_end_of_card);
+		editor.commit();
 	}
 
 	/**
@@ -467,6 +486,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_LOGIN) {
 			if (resultCode == RESULT_OK) {
 				// The user picked a contact.
@@ -547,7 +567,9 @@ public class MainActivity extends FragmentActivity implements
 		if (isPortrait) {
 			FileOutputStream out = null;
 			Bitmap bmp = ImageHelper.drawableToBitmap(drawable);
-			Bitmap bmpRound = ImageHelper.getRoundedCornerBitmap(bmp, 20);
+			debugLog("drawable getWidth: " + drawable.getIntrinsicWidth());
+			debugLog("bmp getWidth: " + bmp.getWidth());
+			Bitmap bmpRound = ImageHelper.getRoundedCornerBitmap(bmp, bmp.getWidth() / 2);
 			try {
 				out = new FileOutputStream(file);
 				bmpRound.compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -569,7 +591,7 @@ public class MainActivity extends FragmentActivity implements
 	 */
 
 	private void debugLog(String message) {
-		Log.i(TAG, message);
+		Log.i(MainActivity.TAG, message);
 	}
 
 	public Player getPlayer() {
@@ -583,7 +605,7 @@ public class MainActivity extends FragmentActivity implements
 	public boolean urlWasInvoked(String arg0) {
 		debugLog("Clicked Coin: " + arg0);
 		debugLog("Clicked Coin: " + arg0.substring("architectsdk://".length()));
-		
+
 		boolean sound = mSharedPrefs.getBoolean(prefs_sound, false);
 		if (sound) {
 			mediaPlayer.start();

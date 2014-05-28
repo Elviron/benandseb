@@ -12,7 +12,7 @@
         android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="2dp"
+        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" >
@@ -29,6 +29,7 @@
             <ImageView
                 android:id="@+id/profile_image"
                 android:layout_width="64dp"
+                android:paddingLeft="10dp"
                 android:layout_height="64dp"
                 android:contentDescription="@string/profile_image_descr"
                 android:scaleType="fitCenter"
@@ -56,7 +57,6 @@
                 android:id="@+id/profile_achiviement_percent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/ic_trophy"
                 android:gravity="center|right"
@@ -67,40 +67,18 @@
                 android:id="@+id/profile_electricoin_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:drawablePadding="10dp"
-                android:drawableRight="@drawable/ic_current_amount"
+                android:drawableRight="@drawable/ic_current_amount_color"
                 android:gravity="center|right"
                 android:text="@string/placeholder_number"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="3dp"
-            android:layout_weight="1"
-            android:background="@color/EL_icon_lightblue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/profile_track" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="3dp"
-            android:layout_weight="1"
-            android:background="@color/EL_icon_lightblue" />
-    </LinearLayout>
+        android:layout_height="3dp"
+        android:background="@color/EL_battery_light" />
 
     <Spinner
         android:id="@+id/planets_spinner"
@@ -109,11 +87,15 @@
         android:layout_gravity="center"
         android:padding="5dp" />
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/profile_track_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_track_achievaholic"
         android:layout_weight="1" >
-    </RelativeLayout>
+    </ImageView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -133,7 +115,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_payment_left"
             android:contentDescription="@string/btn_achievements_descr"
-            android:drawableTop="@drawable/ic_games_achievements"
+            android:drawableTop="@drawable/ic_games_achievements_noshadow"
             android:onClick="onAch"
             android:text="@string/btn_achievements"
             android:textColor="@color/EL_btn_text"
@@ -151,7 +133,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_payment_middle"
             android:contentDescription="@string/btn_leaderboard_descr"
-            android:drawableTop="@drawable/ic_games_leaderboards"
+            android:drawableTop="@drawable/ic_games_leaderboards_noshadow"
             android:onClick="onLead"
             android:text="@string/btn_leaderboard"
             android:textColor="@color/EL_btn_text"
@@ -169,7 +151,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_payment_right"
             android:contentDescription="@string/btn_gifts_descr"
-            android:drawableTop="@drawable/ic_games_gifts"
+            android:drawableTop="@drawable/ic_games_gifts_noshadow"
             android:onClick="onGift"
             android:text="@string/btn_gifts"
             android:textColor="@color/EL_btn_text"

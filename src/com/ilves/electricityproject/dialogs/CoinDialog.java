@@ -1,9 +1,16 @@
 package com.ilves.electricityproject.dialogs;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -13,14 +20,17 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
 
-public class CoinDialog extends DialogFragment {
+public class CoinDialog extends DialogFragment implements
+		OnClickListener {
 
 	private Activity	mContext;
 	private TextView	daysTextView;
 
 	public int			days;
+	private SeekBar		seekbar;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -36,15 +46,11 @@ public class CoinDialog extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 
 		View v = inflater.inflate(R.layout.dialog_coin, null);
-		// set numbers under seekbar
-		LinearLayout ll = (LinearLayout) v.findViewById(R.id.dialog_coins_numbers);
-		for (int i = 0; i < ll.getChildCount(); i++) {
-			((TextView) ll.getChildAt(i)).setText("" + i);
-		}
 		// save reference to the textview containing the number of views
 		daysTextView = (TextView) v.findViewById(R.id.dialog_coins_days);
 		// set change listener on seekbar
-		((SeekBar) v.findViewById(R.id.dialog_coins_seekbar)).setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		seekbar = ((SeekBar) v.findViewById(R.id.dialog_coins_seekbar));
+		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -73,17 +79,39 @@ public class CoinDialog extends DialogFragment {
 		// Pass null as the parent view because its going in the dialog layout
 		builder.setView(v)
 		// Add action buttons
-				.setPositiveButton("Charge", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						// sign in the user ...
-					}
-				})
+				.setPositiveButton("Charge", this)
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						CoinDialog.this.getDialog().cancel();
 					}
 				});
 		return builder.create();
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		String datetimeString = mSharedPrefs.getString(MainActivity.prefs_end_of_card,
+				null);
+		int days_to_add = seekbar.getProgress();
+		DateTime dt;
+		if (datetimeString != null) {
+			// we have a end date for the card
+			dt = DateTime.parse(datetimeString).plusDays(days_to_add);
+		} else {
+			// the card is empty
+			// get current moment in default time zone
+			dt = new DateTime();
+			// translate to Stockholm/Sweden local time
+			dt = dt.withZone(DateTimeZone.forID("Europe/Stockholm"))
+					.withMillisOfDay(0)
+					.plusDays(days_to_add - 1);
+		}
+		Editor editor = mSharedPrefs.edit();
+		editor.putString(MainActivity.prefs_end_of_card, dt.toString());
+		int coins = mSharedPrefs.getInt(MainActivity.prefs_amount, 0) - days_to_add;
+		editor.putInt(MainActivity.prefs_amount, coins);
+		editor.commit();
 	}
 }
