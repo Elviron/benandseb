@@ -17,22 +17,6 @@
             android:contentDescription="@string/app_name"
             android:scaleType="center"
             android:src="@drawable/ic_creditcard" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:contentDescription="@string/app_name"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_arrow_thin" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="center"
-            android:src="@drawable/ic_battery_v2" />
     </LinearLayout>
 
 

@@ -67,6 +67,7 @@ public class CoinDialog extends DialogFragment implements
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// TODO Auto-generated method stub
+				progress++;
 				if (progress != 1) {
 					daysTextView.setText(progress + " days");
 				} else {
@@ -94,7 +95,7 @@ public class CoinDialog extends DialogFragment implements
 		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
 		String datetimeString = mSharedPrefs.getString(MainActivity.prefs_end_of_card,
 				null);
-		int days_to_add = seekbar.getProgress();
+		int days_to_add = seekbar.getProgress()+1;
 		DateTime dt;
 		if (datetimeString != null) {
 			// we have a end date for the card

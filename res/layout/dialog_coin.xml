@@ -17,22 +17,6 @@
             android:contentDescription="@string/app_name"
             android:scaleType="center"
             android:src="@drawable/ic_amount" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:contentDescription="@string/app_name"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_arrow_thin" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="center"
-            android:src="@drawable/ic_battery_v2" />
     </LinearLayout>
 
     <LinearLayout
@@ -74,10 +58,10 @@
             android:id="@+id/dialog_coins_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="7"
+            android:max="6"
             android:maxHeight="21dp"
             android:minHeight="21dp"
-            android:progress="1"
+            android:progress="0"
             android:progressDrawable="@drawable/seekbar_progress" />
     </LinearLayout>
 
