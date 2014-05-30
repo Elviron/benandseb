@@ -3,15 +3,6 @@ package com.ilves.electricityproject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -46,7 +37,8 @@ import com.google.android.gms.common.images.ImageManager.OnImageLoadedListener;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.request.GameRequest;
-import com.ilves.electricityproject.GameHelper.GameHelperListener;
+import com.google.example.games.basegameutils.GameHelper;
+import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 import com.ilves.electricityproject.dialogs.CoinDialog;
 import com.ilves.electricityproject.dialogs.PeriodDialog;
 import com.ilves.electricityproject.dialogs.SettingsDialog;
@@ -297,9 +289,9 @@ public class MainActivity extends FragmentActivity implements
 		super.onStart();
 		// Connect the client.
 		mLocationClient.onStart();
-		if (!mResolvingError) { // more about this later
-			mHelper.connect();
-		}
+		//if (!mResolvingError) { // more about this later
+			mHelper.onStart(this);
+		//}
 		// mHelper.onStart(MainActivity.this);
 	}
 
@@ -363,7 +355,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.action_disconnected:
 			// Connect to Google games
 
-			mHelper.connect();
+			//mHelper.connect();
 			mHelper.onStart(MainActivity.this);
 			return true;
 		case R.id.action_login:
@@ -552,11 +544,11 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void signOut() {
-		mHelper.disconnect();
+		mHelper.signOut();
 	}
 
 	public void signIn() {
-		mHelper.connect();
+		mHelper.beginUserInitiatedSignIn();
 	}
 
 	@Override
@@ -615,6 +607,12 @@ public class MainActivity extends FragmentActivity implements
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
 		editor.putInt(prefs_amount, coins);
 		editor.commit();
+		// achievement
+		Games.Achievements.unlock(mHelper.getApiClient(), getString(R.string.achievement_thats_a_bingo));
+		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_money_bag), 1);
+		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_you_first_crown), 1);
+		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_climbing_up_the_ladder), 1);
+		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_king_of_coins), 1);
 		return false;
 	}
 
