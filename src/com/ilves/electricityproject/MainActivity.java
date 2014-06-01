@@ -159,7 +159,8 @@ public class MainActivity extends FragmentActivity implements
 					// When swiping between pages, select the
 					// corresponding tab.
 					getActionBar().setSelectedNavigationItem(position);
-					//((MainFragmentAdapter) mViewPager.getAdapter()).setActive(position);
+					// ((MainFragmentAdapter)
+					// mViewPager.getAdapter()).setActive(position);
 					if (position == 2) {
 						if (!mResolvingError) { // more about this later
 							// mHelper.connect();
@@ -430,24 +431,26 @@ public class MainActivity extends FragmentActivity implements
 		editor.putInt(prefs_amount, coins);
 		editor.commit();
 		// achievement
-		Games.Achievements.unlock(mHelper.getApiClient(),
-				getString(R.string.achievement_thats_a_bingo));
-		Games.Achievements.increment(mHelper.getApiClient(),
-				getString(R.string.achievement_money_bag),
-				1);
-		Games.Achievements.increment(mHelper.getApiClient(),
-				getString(R.string.achievement_you_first_crown),
-				1);
-		Games.Achievements.increment(mHelper.getApiClient(),
-				getString(R.string.achievement_climbing_up_the_ladder),
-				1);
-		Games.Achievements.increment(mHelper.getApiClient(),
-				getString(R.string.achievement_king_of_coins),
-				1);
-		// Leaderboard
-		Games.Leaderboards.submitScore(mHelper.getApiClient(),
-				getString(R.string.leaderboard_most_coins),
-				coins);
+		if (mHelper.isSignedIn()) {
+			Games.Achievements.unlock(mHelper.getApiClient(),
+					getString(R.string.achievement_thats_a_bingo));
+			Games.Achievements.increment(mHelper.getApiClient(),
+					getString(R.string.achievement_money_bag),
+					1);
+			Games.Achievements.increment(mHelper.getApiClient(),
+					getString(R.string.achievement_you_first_crown),
+					1);
+			Games.Achievements.increment(mHelper.getApiClient(),
+					getString(R.string.achievement_climbing_up_the_ladder),
+					1);
+			Games.Achievements.increment(mHelper.getApiClient(),
+					getString(R.string.achievement_king_of_coins),
+					1);
+			// Leaderboard
+			Games.Leaderboards.submitScore(mHelper.getApiClient(),
+					getString(R.string.leaderboard_most_coins),
+					coins);
+		}
 	}
 
 	public void onLogoutVasttrafik(View v) {

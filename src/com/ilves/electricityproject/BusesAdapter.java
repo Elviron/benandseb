@@ -63,9 +63,9 @@ public class BusesAdapter extends ArrayAdapter<Integer> {
 				}
 			}
 			int newHeight = Math.round(minHeight * mScaleFactor);
-			Log.i("MainActivity", "newHeight 1: " + newHeight);
+			//Log.i("MainActivity", "newHeight 1: " + newHeight);
 			newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
-			Log.i("MainActivity", "newHeight 2: " + newHeight);
+			//Log.i("MainActivity", "newHeight 2: " + newHeight);
 			AbsListView.LayoutParams params = new AbsListView.LayoutParams(
 					rowView.getLayoutParams().width, newHeight);
 			rowView.setLayoutParams(params);
