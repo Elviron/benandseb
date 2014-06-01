@@ -9,6 +9,7 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class BusesAdapter extends ArrayAdapter<Integer> {
@@ -16,8 +17,8 @@ public class BusesAdapter extends ArrayAdapter<Integer> {
 	private Context		mContext;
 	private String[]	mObjects;
 	private float		mScaleFactor	= 1.f;
-	private int			minHeight		= 300;
-	private int			maxHeight		= minHeight * 3;
+	private int			minHeight		= 250;
+	private int			maxHeight		= minHeight * 4;
 	private boolean		hasHeight		= false;
 
 	public BusesAdapter(Context context) {
@@ -71,6 +72,14 @@ public class BusesAdapter extends ArrayAdapter<Integer> {
 			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
 					rowView.getLayoutParams().width, newHeight);
 			// image.setLayoutParams(params2);
+			// swithc up the buses
+			if (position == 1) {
+				((ImageView)rowView.findViewById(R.id.buses_right_bus)).setVisibility(View.VISIBLE);
+				((RelativeLayout)rowView.findViewById(R.id.buses_right_bus_text)).setVisibility(View.VISIBLE);
+			} else if (position == 5) {
+				((ImageView)rowView.findViewById(R.id.buses_left_bus)).setVisibility(View.VISIBLE);
+				((RelativeLayout)rowView.findViewById(R.id.buses_left_bus_text)).setVisibility(View.VISIBLE);
+			}
 			rowView.requestLayout();
 		}
 		return rowView;
@@ -83,12 +92,13 @@ public class BusesAdapter extends ArrayAdapter<Integer> {
 	}
 
 	public void setScale(float mScaleFactor2) {
-		// TODO Auto-generated method stub
+		Log.i("MainActivity", "onScale: " + mScaleFactor2);
+		// Do not wet new scalefactor every time
+		if (mScaleFactor-mScaleFactor2 > 0.05 || mScaleFactor-mScaleFactor2 < -0.05) {
+			mScaleFactor = mScaleFactor2;
 
-		mScaleFactor = mScaleFactor2;
-
-		Log.i("MainActivity", "onScale: " + mScaleFactor);
-		notifyDataSetChanged();
+			notifyDataSetChanged();
+		}
 	}
 
 }

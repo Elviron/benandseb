@@ -1,31 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="150dp"
     android:orientation="horizontal" >
 
-    <Space
+    <RelativeLayout
+        android:id="@+id/buses_left_bus_text"
         android:layout_width="70dp"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:layout_width="9dp"
         android:layout_height="match_parent"
-        android:background="@drawable/buses_road_shape" />
+        android:gravity="center"
+        android:visibility="invisible" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="right"
+            android:paddingBottom="2dp"
+            android:text="5 min" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="49dp"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="9dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/buses_road_shape" />
+
+        <ImageView
+            android:id="@+id/buses_left_bus"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:src="@drawable/buses_icon_down"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
     <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2" />
 
-    <TextView
-        android:layout_width="9dp"
+    <RelativeLayout
+        android:layout_width="49dp"
         android:layout_height="match_parent"
-        android:background="@drawable/buses_road_shape" />
+        android:gravity="center" >
 
-    <Space
+        <TextView
+            android:layout_width="9dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/buses_road_shape" />
+
+        <ImageView
+            android:id="@+id/buses_right_bus"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:src="@drawable/buses_icon_up"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buses_right_bus_text"
         android:layout_width="70dp"
-        android:layout_height="match_parent" />
-    
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="invisible" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="2dp"
+            android:text="5 min" />
+    </RelativeLayout>
 
 </LinearLayout>

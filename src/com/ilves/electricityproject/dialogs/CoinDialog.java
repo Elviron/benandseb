@@ -24,13 +24,17 @@ import com.ilves.electricityproject.MainActivity;
 import com.ilves.electricityproject.R;
 
 public class CoinDialog extends DialogFragment implements
-		OnClickListener {
+		OnClickListener, OnSeekBarChangeListener {
 
 	private Activity	mContext;
 	private TextView	daysTextView;
 
 	public int			days;
 	private SeekBar		seekbar;
+	private TextView	amountTextView;
+	private TextView	subtractTextView;
+	private TextView	equalsTextView;
+	private SharedPreferences	mSharedPrefs;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -47,34 +51,22 @@ public class CoinDialog extends DialogFragment implements
 
 		View v = inflater.inflate(R.layout.dialog_coin, null);
 		// save reference to the textview containing the number of views
-		daysTextView = (TextView) v.findViewById(R.id.dialog_coins_days);
+		daysTextView = (TextView) v.findViewById(R.id.dialog_coin_days);
+		amountTextView = (TextView) v.findViewById(R.id.dialog_coin_amount);
+		mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+		int amount = mSharedPrefs.getInt(MainActivity.prefs_amount, 0);
+		amountTextView.setText(""+amount);
+		subtractTextView = (TextView) v.findViewById(R.id.dialog_coin_amount_subtract);
+		equalsTextView = (TextView) v.findViewById(R.id.dialog_coin_amount_equals);
+		equalsTextView.setText(""+(mSharedPrefs.getInt(MainActivity.prefs_amount, 0)-1)+" left");
 		// set change listener on seekbar
 		seekbar = ((SeekBar) v.findViewById(R.id.dialog_coins_seekbar));
-		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				// TODO Auto-generated method stub
-				progress++;
-				if (progress != 1) {
-					daysTextView.setText(progress + " days");
-				} else {
-					daysTextView.setText(progress + " day");
-				}
-			}
-		});
+		if (amount == 0) {
+			seekbar.setEnabled(false);
+		} else if (amount < 7) {
+			seekbar.setMax(amount);
+		}
+		seekbar.setOnSeekBarChangeListener(this);
 		;
 		// Inflate and set the layout for the dialog
 		// Pass null as the parent view because its going in the dialog layout
@@ -92,7 +84,6 @@ public class CoinDialog extends DialogFragment implements
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		// TODO Auto-generated method stub
-		SharedPreferences mSharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
 		String datetimeString = mSharedPrefs.getString(MainActivity.prefs_end_of_card,
 				null);
 		int days_to_add = seekbar.getProgress()+1;
@@ -114,5 +105,30 @@ public class CoinDialog extends DialogFragment implements
 		int coins = mSharedPrefs.getInt(MainActivity.prefs_amount, 0) - days_to_add;
 		editor.putInt(MainActivity.prefs_amount, coins);
 		editor.commit();
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		// TODO Auto-generated method stub
+		progress++;
+		if (progress != 1) {
+			daysTextView.setText(progress + " days");
+		} else {
+			daysTextView.setText(progress + " day");
+		}
+		subtractTextView.setText(""+progress);
+		equalsTextView.setText(""+(mSharedPrefs.getInt(MainActivity.prefs_amount, 0)-progress)+" left");
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+		
 	}
 }

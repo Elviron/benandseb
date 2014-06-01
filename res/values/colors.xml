@@ -23,6 +23,7 @@
     <color name="EL_battery_dark">#FF9f9f9f</color>
     <color name="EL_battery_light">#FFcdcdcd</color>
     <color name="EL_battery_label">#55000000</color>
-    <color name="EL_battery_color">#FF35fd5a</color>
+    <color name="EL_battery_color">#FF23d844</color>
+    <color name="EL_battery_color_bright">#FF35fd5a</color>
 
 </resources>

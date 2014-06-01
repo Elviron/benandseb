@@ -140,6 +140,7 @@ public class MainActivity extends FragmentActivity implements
 		mLocationClient = new ElectriCityLocationClient(this);
 		// Google play services
 		mHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+		mHelper.setConnectOnStart(false);
 		mHelper.setup(this);
 
 		// get viewpager
@@ -158,7 +159,7 @@ public class MainActivity extends FragmentActivity implements
 					// When swiping between pages, select the
 					// corresponding tab.
 					getActionBar().setSelectedNavigationItem(position);
-					((MainFragmentAdapter) mViewPager.getAdapter()).setActive(position);
+					//((MainFragmentAdapter) mViewPager.getAdapter()).setActive(position);
 					if (position == 2) {
 						if (!mResolvingError) { // more about this later
 							// mHelper.connect();
@@ -206,6 +207,7 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(tabListener));
 			// request updates of location
 			mLocationClient.setUpdates(false);
+			mViewPager.setCurrentItem(1);
 			break;
 		case Configuration.ORIENTATION_LANDSCAPE:
 			isPortrait = false;
@@ -289,9 +291,9 @@ public class MainActivity extends FragmentActivity implements
 		super.onStart();
 		// Connect the client.
 		mLocationClient.onStart();
-		//if (!mResolvingError) { // more about this later
-			mHelper.onStart(this);
-		//}
+		// if (!mResolvingError) { // more about this later
+		mHelper.onStart(this);
+		// }
 		// mHelper.onStart(MainActivity.this);
 	}
 
@@ -354,14 +356,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		case R.id.action_disconnected:
 			// Connect to Google games
-
-			//mHelper.connect();
-			mHelper.onStart(MainActivity.this);
-			return true;
-		case R.id.action_login:
-			// Start login activity
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
+			signIn();
 			return true;
 		case R.id.action_settings:
 			SettingsDialog dialogSettings = new SettingsDialog();
@@ -426,10 +421,33 @@ public class MainActivity extends FragmentActivity implements
 
 	public void onAddCoins(View v) {
 		debugLog("Clear coins");
-		int coins = mSharedPrefs.getInt(prefs_amount, 0) + 10;
+		addCoins(10);
+	}
+
+	private void addCoins(int amount) {
+		int coins = mSharedPrefs.getInt(prefs_amount, 0) + amount;
 		SharedPreferences.Editor editor = mSharedPrefs.edit();
 		editor.putInt(prefs_amount, coins);
 		editor.commit();
+		// achievement
+		Games.Achievements.unlock(mHelper.getApiClient(),
+				getString(R.string.achievement_thats_a_bingo));
+		Games.Achievements.increment(mHelper.getApiClient(),
+				getString(R.string.achievement_money_bag),
+				1);
+		Games.Achievements.increment(mHelper.getApiClient(),
+				getString(R.string.achievement_you_first_crown),
+				1);
+		Games.Achievements.increment(mHelper.getApiClient(),
+				getString(R.string.achievement_climbing_up_the_ladder),
+				1);
+		Games.Achievements.increment(mHelper.getApiClient(),
+				getString(R.string.achievement_king_of_coins),
+				1);
+		// Leaderboard
+		Games.Leaderboards.submitScore(mHelper.getApiClient(),
+				getString(R.string.leaderboard_most_coins),
+				coins);
 	}
 
 	public void onLogoutVasttrafik(View v) {
@@ -544,10 +562,13 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void signOut() {
+		debugLog("signOut()");
 		mHelper.signOut();
 	}
 
 	public void signIn() {
+		debugLog("signIn()");
+		mHelper.onStart(this);
 		mHelper.beginUserInitiatedSignIn();
 	}
 
@@ -598,21 +619,13 @@ public class MainActivity extends FragmentActivity implements
 		debugLog("Clicked Coin: " + arg0);
 		debugLog("Clicked Coin: " + arg0.substring("architectsdk://".length()));
 
-		boolean sound = mSharedPrefs.getBoolean(prefs_sound, false);
-		if (sound) {
-			mediaPlayer.start();
+		if (arg0.substring("architectsdk://".length()).equalsIgnoreCase("coin")) {
+			boolean sound = mSharedPrefs.getBoolean(prefs_sound, false);
+			if (sound) {
+				mediaPlayer.start();
+			}
+			addCoins(1);
 		}
-		int coins = mSharedPrefs.getInt(prefs_amount, 0);
-		coins++;
-		SharedPreferences.Editor editor = mSharedPrefs.edit();
-		editor.putInt(prefs_amount, coins);
-		editor.commit();
-		// achievement
-		Games.Achievements.unlock(mHelper.getApiClient(), getString(R.string.achievement_thats_a_bingo));
-		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_money_bag), 1);
-		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_you_first_crown), 1);
-		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_climbing_up_the_ladder), 1);
-		Games.Achievements.increment(mHelper.getApiClient(), getString(R.string.achievement_king_of_coins), 1);
 		return false;
 	}
 
